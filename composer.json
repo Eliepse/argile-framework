@@ -1,0 +1,41 @@
+{
+    "name" : "eliepse/argile",
+    "description" : "Argile is a very basic Framework to create websites with few features",
+    "type" : "library",
+    "license" : "MIT",
+    "authors" : [
+        {
+            "name" : "Élie Meignan",
+            "email" : "contact@eliepse.fr"
+        }
+    ],
+    "minimum-stability" : "stable",
+    "require" : {
+        "php" : "^7.4",
+        "ext-json" : "*",
+        "slim/slim" : "^4.5",
+        "vlucas/phpdotenv" : "^5.2",
+        "php-di/slim-bridge" : "^3.0",
+        "middlewares/php-session" : "^1.2",
+        "doctrine/cache" : "^1.10",
+        "monolog/monolog" : "^2.1",
+        "symfony/templating" : "^5.1",
+        "slim/psr7": "^1.2"
+    },
+    "require-dev" : {
+        "symfony/var-dumper" : "^5.1",
+        "phpstan/phpstan": "^0.12.42",
+        "phpunit/phpunit": "^9.3"
+    },
+    "autoload" : {
+        "psr-4" : {
+            "Eliepse\\Argile\\" : "src"
+        }
+    },
+    "scripts" : {
+        "test" : [
+            "@phpstan --ansi"
+        ],
+        "phpstan" : "phpstan analyse -c phpstan.neon src --ansi"
+    }
+}
