@@ -12,9 +12,17 @@ class ContentSecurityPolicyMiddleware implements MiddlewareInterface
 
 	private bool $reportOnly;
 	private string $defaultSrc;
+	/** @var array<string, string>  */
 	private array $directives;
 
 
+	/**
+	 * ContentSecurityPolicyMiddleware constructor.
+	 *
+	 * @param bool $reportOnly
+	 * @param string $defaultSrc
+	 * @param array<string, string> $directives
+	 */
 	public function __construct(
 		bool $reportOnly = false,
 		string $defaultSrc = "'self'",

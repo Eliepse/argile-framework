@@ -11,6 +11,9 @@ use Slim\Flash\Messages;
 
 class FlashFormInputsMiddleware implements MiddlewareInterface
 {
+	/**
+	 * @var array|string[]
+	 */
 	private array $allowedContentType = [
 		"application/x-www-form-urlencoded",
 		"multipart/form-data",
@@ -27,7 +30,13 @@ class FlashFormInputsMiddleware implements MiddlewareInterface
 			return $handler->handle($request);
 		}
 
-		$inputs = $request->getParsedBody();
+		$inputs = $request->getParsedBody() ?? [];
+
+		// TODO(eliepse): handle the case when an object is return by `getParsedBody()`
+		if(is_object($inputs)) {
+			return $handler->handle($request);
+		}
+
 		foreach ($inputs as $name => $value) {
 			App::getInstance()->container->get(Messages::class)->addMessage("old.$name", $value);
 		}
