@@ -1,6 +1,6 @@
 # Argile
 
-![Php 7.4](https://img.shields.io/badge/php-7.4%2B-blue)
+![Php 8.0](https://img.shields.io/badge/php-8.0%2B-blue)
 
 Argile is a light php framework. It provides basics features for simple websites such as showcase websites for company
 without frequent changes. Due to its low feature set, it's fast and does not consome lot of memory.
