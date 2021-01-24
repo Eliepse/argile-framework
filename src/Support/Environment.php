@@ -28,7 +28,7 @@ final class Environment
 	 */
 	public static function validate(string $key, array $rules, bool $throw = true): bool
 	{
-		if (isset($rules['required']) && true === $rules['required'] && ! isset($_ENV[ $key ])) {
+		if (isset($rules['required']) && true === $rules['required'] && ! isset($_ENV[$key])) {
 			if ($throw) {
 				throw new ErrorException("The '$key' environment variable is required.");
 			}
@@ -52,16 +52,16 @@ final class Environment
 		}
 
 		if (isset($rules['type'])) {
-			if ('integer' === $rules['type'] && ! is_int($value)) {
+			if ('integer' === $rules['type'] && ! ctype_digit(strval($value))) {
 				if ($throw) {
 					throw new ErrorException("The '$key' environment must be an integer.");
 				}
 				return false;
 			}
 
-			if ('boolean' === $rules['type'] && ! is_bool($value)) {
+			if ('boolean' === $rules['type'] && (! is_bool($value) || in_array($value, ["true", "false"]))) {
 				if ($throw) {
-					throw new ErrorException("The '$key' environment must be an integer.");
+					throw new ErrorException("The '$key' environment must be a boolean.");
 				}
 				return false;
 			}
@@ -79,11 +79,11 @@ final class Environment
 	 */
 	public static function get(string $key, $default = null)
 	{
-		if (! isset($_ENV[ $key ])) {
+		if (! isset($_ENV[$key])) {
 			return $default;
 		}
 
-		$value = $_ENV[ $key ];
+		$value = $_ENV[$key];
 
 		if (false === $value) {
 			return $default;
