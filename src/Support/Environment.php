@@ -102,8 +102,14 @@ final class Environment
 	}
 
 
+	public static function isDevelopment(): bool
+	{
+		return self::get("APP_ENV") === "local";
+	}
+
+
 	public static function isProduction(): bool
 	{
-		return self::get("APP_ENV") === "production";
+		return ! self::isDevelopment();
 	}
 }
