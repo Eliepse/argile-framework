@@ -97,7 +97,8 @@ final class App
 
 	public function loadTemplatingSystem(): void
 	{
-		$filesystem = new ViewFileSystemLoader([Path::resources("views/%name%")]);
+		$viewCachePath = Environment::isProduction() ? Path::storage("framework/views/") : null;
+		$filesystem = new ViewFileSystemLoader([Path::resources("views/%name%")], $viewCachePath);
 		$filesystem->setLogger($this->logger);
 		$this->templating = new PhpEngine(new TemplateNameParser(), $filesystem);
 	}

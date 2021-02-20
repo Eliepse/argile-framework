@@ -2,8 +2,6 @@
 
 namespace Eliepse\Argile\View;
 
-use Eliepse\Argile\Support\Environment;
-use Eliepse\Argile\Support\Path;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
@@ -12,16 +10,22 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
 
 final class ViewFileSystemLoader extends FilesystemLoader
 {
-	private string $cachePath;
+	private ?string $cachePath;
 
 
-	public function __construct($templatePathPatterns)
+	public function __construct($templatePathPatterns, string $cachePath = null)
 	{
 		parent::__construct($templatePathPatterns);
-		$this->cachePath = Path::storage("framework/views/");
+		$this->cachePath = $cachePath;
 	}
 
 
+	/**
+	 * @param TemplateReferenceInterface $template
+	 *
+	 * @return FileStorage|StringStorage|false
+	 * @throws \ErrorException
+	 */
 	public function load(TemplateReferenceInterface $template)
 	{
 		$file = $template->get('name');
@@ -30,51 +34,69 @@ final class ViewFileSystemLoader extends FilesystemLoader
 			return new FileStorage($file);
 		}
 
-		$replacements = [];
-		foreach ($template->all() as $key => $value) {
-			$replacements[ '%' . $key . '%' ] = $value;
+		$paths = $this->getTemplateFilePaths($template);
+
+		if (empty($paths)) {
+			$this->logger?->debug('Failed loading template.', [
+				'name' => $template->get('name'),
+			]);
+			return false;
 		}
 
-		$templateFailures = [];
-		foreach ($this->templatePathPatterns as $templatePathPattern) {
-			if (is_file($view_path = strtr($templatePathPattern, $replacements)) && is_readable($view_path)) {
+		foreach ($paths as $templatePath) {
+			$cache_path = $this->getCachePath($templatePath);
 
-				$cache_path = $this->getCachePath($template);
-
-				if ($this->isCached($cache_path, $view_path)) {
-					return new FileStorage($cache_path);
-				}
-
-				$content = $this->parseTemplate(new FileStorage($view_path));
-
-				if (Environment::isProduction()) {
-					$this->cacheView($template, $content);
-				}
-
-				return new StringStorage($content);
+			if ($this->isCached($templatePath)) {
+				return new FileStorage($cache_path);
 			}
 
-			if (null !== $this->logger) {
-				$templateFailures[] = $template;
-			}
-		}
-
-		// only log failures if no template could be loaded at all
-		foreach ($templateFailures as $temp) {
-			if (null !== $this->logger) {
-				$this->logger->debug('Failed loading template file.', [
-					'file' => $temp->get('name'),
-				]);
-			}
+			$content = $this->parseTemplate(new FileStorage($templatePath));
+			$this->cacheTemplate($templatePath, $content);
+			return new StringStorage($content);
 		}
 
 		return false;
 	}
 
 
-	private function getCachePath(TemplateReferenceInterface $template): string
+	/**
+	 * Resolve template path-patterns with the fiven template reference.
+	 * Paths are then tested and filtered if the template is not found/readable.
+	 *
+	 * @param TemplateReferenceInterface $template
+	 *
+	 * @return string[]
+	 */
+	private function getTemplateFilePaths(TemplateReferenceInterface $template): array
 	{
-		return $this->cachePath . md5($template->get("name")) . ".php";
+		$replacements = array_combine(
+			array_map(fn($val) => "%$val%", array_keys($template->all())),
+			array_values($template->all()),
+		);
+
+		$paths = array_map(
+			function ($pathPattern) use ($replacements) {
+				return strtr($pathPattern, $replacements);
+			},
+			$this->templatePathPatterns
+		);
+
+		return array_filter($paths, fn($path) => is_file($path) && is_readable($path));
+	}
+
+
+	/**
+	 * @param string $templatePath The resolved template path
+	 *
+	 * @return string The theorical path to the cached template file
+	 */
+	private function getCachePath(string $templatePath): string
+	{
+		if (! $this->isCacheEnabled()) {
+			return $templatePath;
+		}
+
+		return $this->cachePath . hash("sha256", $templatePath) . ".php";
 	}
 
 
@@ -127,31 +149,62 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	}
 
 
-	private function isCached(string $cache_path, string $view_path): bool
+	/**
+	 * Check if the cache is enable. Returns false if the cachePath
+	 * has not been set, or if the environment is not in Production.
+	 *
+	 * @return bool
+	 */
+	private function isCacheEnabled(): bool
 	{
-		return Environment::isProduction() && is_file($cache_path) && filemtime($view_path) < filemtime($cache_path);
+		return $this->cachePath !== null;
 	}
 
 
-	private function cacheView(TemplateReferenceInterface $template, string $content): void
+	/**
+	 * @param string $templatePath The resolved template path
+	 *
+	 * @return bool
+	 */
+	private function isCached(string $templatePath): bool
 	{
-		$cache_path = $this->getCachePath($template);
+		if (! $this->isCacheEnabled()) {
+			return false;
+		}
 
-		if (! is_dir($this->cachePath)) {
+		$templateCachePath = $this->getCachePath($templatePath);
+
+		return is_file($templatePath) && filemtime($templatePath) < filemtime($templatePath);
+	}
+
+
+	/**
+	 * Write the cached template to the disk.
+	 *
+	 * @param string $templatePath The resolved path to the template file (not the cached file path)
+	 * @param string $content The content of the cached template
+	 */
+	private function cacheTemplate(string $templatePath, string $content): void
+	{
+		if (! $this->isCacheEnabled()) {
+			return;
+		}
+
+		$cachePath = $this->getCachePath($templatePath);
+
+		if ($this->cachePath && ! is_dir($this->cachePath)) {
 			if (false === mkdir($this->cachePath, 0774, true)) {
-				/** @phpstan-ignore-next-line */
-				$this->logger->error("Could not create views cache directory.", [
-					"view" => $template->get('name'),
-					"cachePath" => $cache_path,
+				$this->logger?->error("Could not create views cache directory.", [
+					"templatePath" => $templatePath,
+					"cachePath" => $cachePath,
 				]);
 			}
 		}
 
-		if (false === file_put_contents($this->getCachePath($template), $content)) {
-			/** @phpstan-ignore-next-line */
-			$this->logger->error("Failed to write parsed template to cache.", [
-				"view" => $template->get('name'),
-				"cachePath" => $cache_path,
+		if (false === file_put_contents($cachePath, $content)) {
+			$this->logger?->error("Failed to write parsed template to cache.", [
+				"templatePath" => $templatePath,
+				"cachePath" => $cachePath,
 			]);
 		}
 	}

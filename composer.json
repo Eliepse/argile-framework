@@ -26,17 +26,20 @@
     "require-dev" : {
         "symfony/var-dumper" : "^5.1",
         "phpstan/phpstan": "^0.12.42",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.5"
     },
     "autoload" : {
         "psr-4" : {
-            "Eliepse\\Argile\\" : "src"
+            "Eliepse\\Argile\\" : "src",
+            "Eliepse\\Argile\\Tests\\" : "tests"
         }
     },
     "scripts" : {
         "test" : [
-            "@phpstan --ansi"
+            "@phpstan --ansi",
+            "@phpunit"
         ],
-        "phpstan" : "phpstan analyse -c phpstan.neon src --ansi"
+        "phpstan" : "phpstan analyse -c phpstan.neon src --ansi",
+        "phpunit" : "phpunit tests"
     }
 }
