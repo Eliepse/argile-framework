@@ -23,15 +23,14 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	/**
 	 * @param TemplateReferenceInterface $template
 	 *
-	 * @return FileStorage|StringStorage|false
-	 * @throws \ErrorException
+	 * @return Storage|false
 	 */
 	public function load(TemplateReferenceInterface $template)
 	{
 		$file = $template->get('name');
 
 		if (self::isAbsolutePath($file) && is_file($file)) {
-			return new FileStorage($file);
+			return $this->processTemplateFile($file);
 		}
 
 		$paths = $this->getTemplateFilePaths($template);
@@ -44,15 +43,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 		}
 
 		foreach ($paths as $templatePath) {
-			$cache_path = $this->getCachePath($templatePath);
-
-			if ($this->isCached($templatePath)) {
-				return new FileStorage($cache_path);
-			}
-
-			$content = $this->parseTemplate(new FileStorage($templatePath));
-			$this->cacheTemplate($templatePath, $content);
-			return new StringStorage($content);
+			return $this->processTemplateFile($templatePath);
 		}
 
 		return false;
@@ -97,6 +88,28 @@ final class ViewFileSystemLoader extends FilesystemLoader
 		}
 
 		return $this->cachePath . hash("sha256", $templatePath) . ".php";
+	}
+
+
+	/**
+	 * Process the template file at the path. Use the cache if available.
+	 *
+	 * @param string $templatePath The absolute path to the template file
+	 *
+	 * @return Storage
+	 * @throws \ErrorException
+	 */
+	private function processTemplateFile(string $templatePath): Storage
+	{
+		$cache_path = $this->getCachePath($templatePath);
+
+		if ($this->isCached($templatePath)) {
+			return new FileStorage($cache_path);
+		}
+
+		$content = $this->parseTemplate(new FileStorage($templatePath));
+		$this->cacheTemplate($templatePath, $content);
+		return new StringStorage($content);
 	}
 
 

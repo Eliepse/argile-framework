@@ -17,16 +17,16 @@ class ViewFileSystemLoaderTest extends TestCase
 	}
 
 
-	public function testNotCompiledOnAbsolutePath(): void
+	public function testLoadAbsolutePath(): void
 	{
 		$loader = $this->getLoader();
 		$storage = $loader->load($this->nameParser->parse(__DIR__ . "/fixtures/hello.view"));
 		$this->assertNotFalse($storage);
-		$this->assertEquals("Hello World {# comment #}", $storage->getContent());
+		$this->assertEquals("Hello World <?php #  comment ?>", $storage->getContent());
 	}
 
 
-	public function testBasicFileLoad(): void
+	public function testLoadBasicView(): void
 	{
 		$loader = $this->getLoader();
 		$storage = $loader->load($this->nameParser->parse("hello.view"));
@@ -35,7 +35,7 @@ class ViewFileSystemLoaderTest extends TestCase
 	}
 
 
-	public function testFileNotFound(): void
+	public function testViewNotFound(): void
 	{
 		$loader = $this->getLoader();
 		$storage = $loader->load($this->nameParser->parse("unknown.view"));
