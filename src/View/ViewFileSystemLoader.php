@@ -113,6 +113,14 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	}
 
 
+	/**
+	 * Parse the template as a view and return a fonctionnal php file.
+	 *
+	 * @param Storage $file
+	 *
+	 * @return string
+	 * @throws \ErrorException
+	 */
 	private function parseTemplate(Storage $file): string
 	{
 		$content = $file->getContent();
@@ -123,7 +131,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 				case '%':
 					return $this->parseLogicalBrackets($matches[3]);
 				case '#':
-					return "<?php # $matches[3] ?>";
+					return "<?php #$matches[3] ?>";
 			}
 			return $matches[0];
 		}, $content);

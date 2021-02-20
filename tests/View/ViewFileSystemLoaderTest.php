@@ -22,7 +22,7 @@ class ViewFileSystemLoaderTest extends TestCase
 		$loader = $this->getLoader();
 		$storage = $loader->load($this->nameParser->parse(__DIR__ . "/fixtures/hello.view"));
 		$this->assertNotFalse($storage);
-		$this->assertEquals("Hello World <?php #  comment ?>", $storage->getContent());
+		$this->assertEquals("Hello World <?php # comment ?>", $storage->getContent());
 	}
 
 
@@ -31,7 +31,7 @@ class ViewFileSystemLoaderTest extends TestCase
 		$loader = $this->getLoader();
 		$storage = $loader->load($this->nameParser->parse("hello.view"));
 		$this->assertNotFalse($storage);
-		$this->assertEquals("Hello World <?php #  comment ?>", $storage->getContent());
+		$this->assertEquals("Hello World <?php # comment ?>", $storage->getContent());
 	}
 
 
