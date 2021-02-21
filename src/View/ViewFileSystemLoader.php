@@ -193,9 +193,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 			return false;
 		}
 
-		$templateCachePath = $this->getCachePath($templatePath);
-
-		return is_file($templatePath) && filemtime($templatePath) < filemtime($templatePath);
+		return is_file($this->getCachePath($templatePath));
 	}
 
 
