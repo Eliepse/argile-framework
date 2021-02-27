@@ -2,9 +2,13 @@
 
 namespace Eliepse\Argile\Tests;
 
+use Eliepse\Argile\View\ViewFactory;
+use Eliepse\Argile\View\ViewFileSystemLoader;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
+use Symfony\Component\Templating\PhpEngine;
+use Symfony\Component\Templating\TemplateNameParser;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -23,5 +27,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
 			)
 		);
 		$this->logger = new Logger("tests", [$stream]);
+
+		// Boot default ViewFactory
+		$filesystem = new ViewFileSystemLoader([__DIR__ . "/View/fixtures/%name%"]);
+		$filesystem->setLogger($this->logger);
+		ViewFactory::getInstance(new PhpEngine(new TemplateNameParser(), $filesystem));
 	}
 }
