@@ -2,6 +2,7 @@
 
 namespace Eliepse\Argile\View;
 
+use ErrorException;
 use Symfony\Component\Templating\Loader\FilesystemLoader;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
@@ -24,8 +25,9 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	 * @param TemplateReferenceInterface $template
 	 *
 	 * @return Storage|false
+	 * @throws ErrorException
 	 */
-	public function load(TemplateReferenceInterface $template)
+	public function load(TemplateReferenceInterface $template): bool|Storage
 	{
 		$file = $template->get('name');
 
@@ -33,18 +35,15 @@ final class ViewFileSystemLoader extends FilesystemLoader
 			return $this->processTemplateFile($file);
 		}
 
-		$paths = $this->getTemplateFilePaths($template);
-
-		if (empty($paths)) {
-			$this->logger?->debug('Failed loading template.', [
-				'name' => $template->get('name'),
-			]);
-			return false;
-		}
+		$paths = array_filter($this->getTemplateFilePaths($template));
 
 		foreach ($paths as $templatePath) {
 			return $this->processTemplateFile($templatePath);
 		}
+
+		$this->logger?->debug('Failed loading template.', [
+			'name' => $template->get('name'),
+		]);
 
 		return false;
 	}
