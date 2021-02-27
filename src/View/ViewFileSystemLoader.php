@@ -96,7 +96,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	 * @param string $templatePath The absolute path to the template file
 	 *
 	 * @return Storage
-	 * @throws \ErrorException
+	 * @throws ErrorException
 	 */
 	private function processTemplateFile(string $templatePath): Storage
 	{
@@ -118,7 +118,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 	 * @param Storage $file
 	 *
 	 * @return string
-	 * @throws \ErrorException
+	 * @throws ErrorException
 	 */
 	private function parseTemplate(Storage $file): string
 	{
@@ -136,13 +136,19 @@ final class ViewFileSystemLoader extends FilesystemLoader
 		}, $content);
 
 		if (is_null($parsed_content)) {
-			throw new \ErrorException("Unable to parse the view, error with the 'preg_replace_callback'.");
+			throw new ErrorException("Unable to parse the view, error with the 'preg_replace_callback'.");
 		}
 
 		return $parsed_content;
 	}
 
 
+	/**
+	 * @param string $content
+	 *
+	 * @return string
+	 * @throws ErrorException
+	 */
 	private function parseLogicalBrackets(string $content): string
 	{
 		$parsed_bracket = preg_replace_callback("/(\s*([a-z]+)\s*(.*))/mi", function ($matches) {
@@ -162,7 +168,7 @@ final class ViewFileSystemLoader extends FilesystemLoader
 		}, $content);
 
 		if (is_null($parsed_bracket)) {
-			throw new \ErrorException("Unable to parse logical bracket.");
+			throw new ErrorException("Unable to parse logical bracket.");
 		}
 
 		return $parsed_bracket;
