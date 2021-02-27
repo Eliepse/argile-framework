@@ -45,8 +45,8 @@ class ViewFileSystemLoaderTest extends TestCase
 
 	private function getLoader(): ViewFileSystemLoader
 	{
-		$filesystem = new ViewFileSystemLoader([__DIR__ . "/fixtures"]);
+		$filesystem = new ViewFileSystemLoader([__DIR__ . "/fixtures/%name%"]);
 		$filesystem->setLogger($this->logger);
-		return new ViewFileSystemLoader([__DIR__ . "/fixtures/%name%"]);
+		return $filesystem;
 	}
 }
