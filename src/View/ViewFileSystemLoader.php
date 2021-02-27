@@ -157,6 +157,8 @@ final class ViewFileSystemLoader extends FilesystemLoader
 					return '<?= $view->render(' . trim($matches[3]) . ') ?>';
 				case 'if':
 					return '<?php if(' . trim($matches[3]) . '): ?>';
+				case 'else':
+					return '<?php else: ?>';
 				case 'endif':
 					return '<?php endif; ?>';
 				case 'for':
