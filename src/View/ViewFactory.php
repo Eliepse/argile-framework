@@ -29,10 +29,12 @@ final class ViewFactory
 
 
 	/**
-	 * @param string $viewName
-	 * @param array<string, mixed> $values
+	 * Render the view with the App's default template engine
 	 *
-	 * @return string
+	 * @param string $viewName The name of the view
+	 * @param array<string, mixed> $values The parameters to pass to the view
+	 *
+	 * @return string The rendered template
 	 */
 	public function render(string $viewName, array $values = []): string
 	{
@@ -43,13 +45,15 @@ final class ViewFactory
 
 
 	/**
-	 * @param string $name
-	 * @param array<string, mixed> $values
+	 * Render the view with the App's default template engine
 	 *
-	 * @return string
+	 * @param string $viewName The name of the view
+	 * @param array<string, mixed> $values The parameters to pass to the view
+	 *
+	 * @return string The rendered template
 	 */
-	public static function make(string $name, array $values = []): string
+	public static function make(string $viewName, array $values = []): string
 	{
-		return self::getInstance()->render($name, $values);
+		return self::getInstance()->render($viewName, $values);
 	}
 }
