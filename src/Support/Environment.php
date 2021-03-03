@@ -9,6 +9,11 @@ final class Environment
 {
 	public static function load(string $env_dir): void
 	{
+		if ($_SERVER["APP_ENV"] === "testing") {
+			$_ENV["APP_ENV"] = $_SERVER["APP_ENV"];
+			return;
+		}
+
 		$dotenv = Dotenv::createImmutable($env_dir);
 		$dotenv->load();
 		$dotenv->required('APP_ENV')->notEmpty()->allowedValues(['local', 'production']);
@@ -108,8 +113,14 @@ final class Environment
 	}
 
 
+	public static function isTesting(): bool
+	{
+		return self::get("APP_ENV") === "testing";
+	}
+
+
 	public static function isProduction(): bool
 	{
-		return ! self::isDevelopment();
+		return ! self::isDevelopment() && ! self::isTesting();
 	}
 }

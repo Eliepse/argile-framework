@@ -7,24 +7,12 @@ use Symfony\Component\Templating\EngineInterface;
 
 final class ViewFactory
 {
-	static private ?ViewFactory $_instance = null;
-
 	private EngineInterface $engine;
 
 
 	public function __construct(EngineInterface $templateEngine = null)
 	{
 		$this->engine = $templateEngine ?? App::getInstance()->getTemplateEngine();
-	}
-
-
-	static public function getInstance(EngineInterface $templateEngine = null): ViewFactory
-	{
-		if (is_null(self::$_instance)) {
-			self::$_instance = new self($templateEngine);
-		}
-
-		return self::$_instance;
 	}
 
 
@@ -54,6 +42,7 @@ final class ViewFactory
 	 */
 	public static function make(string $viewName, array $values = []): string
 	{
-		return self::getInstance()->render($viewName, $values);
+		$viewFactory = App::getInstance()->container->get(self::class);
+		return $viewFactory->render($viewName, $values);
 	}
 }

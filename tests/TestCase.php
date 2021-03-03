@@ -2,35 +2,20 @@
 
 namespace Eliepse\Argile\Tests;
 
-use Eliepse\Argile\View\ViewFactory;
-use Eliepse\Argile\View\ViewFileSystemLoader;
-use Monolog\Formatter\LineFormatter;
-use Monolog\Handler\RotatingFileHandler;
-use Monolog\Logger;
-use Symfony\Component\Templating\PhpEngine;
-use Symfony\Component\Templating\TemplateNameParser;
+use Eliepse\Argile\App;
+use Eliepse\Argile\Testing\LogServiceProvider;
+use Eliepse\Argile\Testing\ViewServiceProvider;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
-	protected Logger $logger;
-
-
 	public function __construct(?string $name = null, array $data = [], $dataName = '')
 	{
 		parent::__construct($name, $data, $dataName);
 
-		$stream = new RotatingFileHandler(__DIR__ . "/logs/log.log", 7, Logger::DEBUG);
-		$stream->setFormatter(
-			new LineFormatter(
-				"[%datetime%] %channel%.%level_name%: %message% %context% %extra%\n",
-				"Y-m-d H:i:s"
-			)
-		);
-		$this->logger = new Logger("tests", [$stream]);
-
-		// Boot default ViewFactory
-		$filesystem = new ViewFileSystemLoader([__DIR__ . "/View/fixtures/%name%"]);
-		$filesystem->setLogger($this->logger);
-		ViewFactory::getInstance(new PhpEngine(new TemplateNameParser(), $filesystem));
+		$app = App::init(__DIR__);
+		$app->boot([
+			LogServiceProvider::class,
+			ViewServiceProvider::class,
+		]);
 	}
 }

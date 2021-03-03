@@ -2,8 +2,10 @@
 
 namespace Eliepse\Argile\Tests\View;
 
+use Eliepse\Argile\App;
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\ViewFileSystemLoader;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Templating\TemplateNameParser;
 
 class ViewFileSystemLoaderTest extends TestCase
@@ -46,7 +48,7 @@ class ViewFileSystemLoaderTest extends TestCase
 	private function getLoader(): ViewFileSystemLoader
 	{
 		$filesystem = new ViewFileSystemLoader([__DIR__ . "/fixtures/%name%"]);
-		$filesystem->setLogger($this->logger);
+		$filesystem->setLogger(App::getInstance()->container->get(LoggerInterface::class));
 		return $filesystem;
 	}
 }
