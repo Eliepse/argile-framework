@@ -26,7 +26,8 @@
     "require-dev" : {
         "symfony/var-dumper" : "^5.1",
         "phpstan/phpstan": "^0.12.42",
-        "phpunit/phpunit": "^9.5"
+        "phpunit/phpunit": "^9.5",
+        "sempro/phpunit-pretty-print": "^1.4"
     },
     "autoload" : {
         "psr-4" : {
