@@ -2,12 +2,13 @@
 
 namespace Eliepse\Argile\Testing;
 
-use Eliepse\Argile\Repositories\EnvironmentRepository;
+use Eliepse\Argile\Core\Environment;
+use Eliepse\Argile\Core\EnvironmentInterface;
 
 final class EnvironmentProvider extends \Eliepse\Argile\Providers\EnvironmentProvider
 {
-	protected function getRepository(): EnvironmentRepository
+	protected function getRepository(): EnvironmentInterface
 	{
-		return EnvironmentRepository::createFromArray(getenv());
+		return Environment::createFromArray(getenv());
 	}
 }

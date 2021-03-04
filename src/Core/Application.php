@@ -10,7 +10,7 @@ use Eliepse\Argile\Providers\EnvironmentProvider;
 use Eliepse\Argile\Providers\LogServiceProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Providers\ViewServiceProvider;
-use Eliepse\Argile\Support\Environment;
+use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\View\ViewFileSystemLoader;
 use ErrorException;
@@ -131,13 +131,13 @@ final class Application
 	public function loadCacheSystem(): void
 	{
 		$this->cache = new PhpFileCache(Path::storage("framework/cache"));
-		$this->cache->setNamespace(Environment::get("APP_CACHE_PREFIX", "simpleApp_"));
+		$this->cache->setNamespace(Env::get("APP_CACHE_PREFIX", "simpleApp_"));
 	}
 
 
 	public function getTemplatingEngine(): PhpEngine
 	{
-		$viewCachePath = Environment::isProduction() ? Path::storage("framework/views/") : null;
+		$viewCachePath = Env::isProduction() ? Path::storage("framework/views/") : null;
 		$filesystem = new ViewFileSystemLoader([Path::resources("views/%name%")], $viewCachePath);
 		$filesystem->setLogger($this->logger);
 		return new PhpEngine(new TemplateNameParser(), $filesystem);

@@ -1,13 +1,13 @@
 <?php
 
-namespace Eliepse\Argile\Repositories;
+namespace Eliepse\Argile\Core;
 
 use Dotenv\Dotenv;
 use Dotenv\Repository\RepositoryBuilder;
 use Dotenv\Repository\RepositoryInterface;
 use ErrorException;
 
-final class EnvironmentRepository
+final class Environment implements EnvironmentInterface
 {
 	protected function __construct(private RepositoryInterface $repository)
 	{

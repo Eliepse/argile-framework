@@ -3,9 +3,9 @@
 namespace Eliepse\Argile\Support;
 
 use Eliepse\Argile\Core\Application;
-use Eliepse\Argile\Repositories\EnvironmentRepository;
+use Eliepse\Argile\Core\EnvironmentInterface;
 
-final class Environment
+final class Env
 {
 	/**
 	 * @param string $key
@@ -15,7 +15,7 @@ final class Environment
 	 */
 	public static function get(string $key, mixed $default = null): mixed
 	{
-		return Application::getInstance()->container->get(EnvironmentRepository::class)->get($key, $default);
+		return Application::getInstance()->container->get(EnvironmentInterface::class)->get($key, $default);
 	}
 
 

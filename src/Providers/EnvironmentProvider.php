@@ -2,13 +2,14 @@
 
 namespace Eliepse\Argile\Providers;
 
-use Eliepse\Argile\Repositories\EnvironmentRepository;
+use Eliepse\Argile\Core\Environment;
+use Eliepse\Argile\Core\EnvironmentInterface;
 
 class EnvironmentProvider extends ServiceProvider
 {
 	public function register(): void
 	{
-		$this->app->register(EnvironmentRepository::class, function () {
+		$this->app->register(EnvironmentInterface::class, function () {
 			return $this->getRepository();
 		});
 	}
@@ -20,8 +21,8 @@ class EnvironmentProvider extends ServiceProvider
 	}
 
 
-	protected function getRepository(): EnvironmentRepository
+	protected function getRepository(): EnvironmentInterface
 	{
-		return EnvironmentRepository::createFromFile($this->app->getProjectDirectory());
+		return Environment::createFromFile($this->app->getProjectDirectory());
 	}
 }

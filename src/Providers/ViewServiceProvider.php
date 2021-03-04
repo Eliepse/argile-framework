@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\Providers;
 
-use Eliepse\Argile\Support\Environment;
+use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\View\ViewFactory;
 use Eliepse\Argile\View\ViewFileSystemLoader;
@@ -17,7 +17,7 @@ class ViewServiceProvider extends ServiceProvider
 	public function register(): void
 	{
 		$this->app->register(ViewFactory::class, function (ContainerInterface $c) {
-			$viewCachePath = Environment::isProduction() ? $this->getCacheDirectory() : null;
+			$viewCachePath = Env::isProduction() ? $this->getCacheDirectory() : null;
 			$filesystemLoader = new ViewFileSystemLoader($this->getViewDirectory(), $viewCachePath);
 			$filesystemLoader->setLogger($c->get(LoggerInterface::class));
 			$engine = new PhpEngine(new TemplateNameParser(), $filesystemLoader);
