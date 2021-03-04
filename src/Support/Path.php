@@ -2,13 +2,13 @@
 
 namespace Eliepse\Argile\Support;
 
-use Eliepse\Argile\App;
+use Eliepse\Argile\Core\Application;
 
 final class Path
 {
 	public static function root(string $path = ""): string
 	{
-		return App::getInstance()->getProjectDirectory() . '/' . $path;
+		return Application::getInstance()->getProjectDirectory() . '/' . $path;
 	}
 
 

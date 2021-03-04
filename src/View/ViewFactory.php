@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\View;
 
-use Eliepse\Argile\App;
+use Eliepse\Argile\Core\Application;
 use Symfony\Component\Templating\EngineInterface;
 
 final class ViewFactory
@@ -12,7 +12,7 @@ final class ViewFactory
 
 	public function __construct(EngineInterface $templateEngine = null)
 	{
-		$this->engine = $templateEngine ?? App::getInstance()->getTemplateEngine();
+		$this->engine = $templateEngine ?? Application::getInstance()->getTemplateEngine();
 	}
 
 
@@ -42,7 +42,7 @@ final class ViewFactory
 	 */
 	public static function make(string $viewName, array $values = []): string
 	{
-		$viewFactory = App::getInstance()->container->get(self::class);
+		$viewFactory = Application::getInstance()->container->get(self::class);
 		return $viewFactory->render($viewName, $values);
 	}
 }

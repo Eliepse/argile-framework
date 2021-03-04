@@ -2,7 +2,8 @@
 
 namespace Eliepse\Argile\Tests;
 
-use Eliepse\Argile\App;
+use Eliepse\Argile\Core\Application;
+use Eliepse\Argile\Testing\EnvironmentProvider;
 use Eliepse\Argile\Testing\LogServiceProvider;
 use Eliepse\Argile\Testing\ViewServiceProvider;
 
@@ -12,8 +13,9 @@ class TestCase extends \PHPUnit\Framework\TestCase
 	{
 		parent::__construct($name, $data, $dataName);
 
-		$app = App::init(__DIR__);
+		$app = Application::init(__DIR__);
 		$app->boot([
+			EnvironmentProvider::class,
 			LogServiceProvider::class,
 			ViewServiceProvider::class,
 		]);

@@ -1,11 +1,12 @@
 <?php
 
-namespace Eliepse\Argile;
+namespace Eliepse\Argile\Core;
 
 use DI\Bridge\Slim\Bridge;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
+use Eliepse\Argile\Providers\EnvironmentProvider;
 use Eliepse\Argile\Providers\LogServiceProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Providers\ViewServiceProvider;
@@ -20,7 +21,7 @@ use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 use function DI\factory as DIFactory;
 
-final class App
+final class Application
 {
 	private static self $_instance;
 	private string $project_directory;
@@ -35,6 +36,7 @@ final class App
 	 * @var string[]
 	 */
 	public static array $defaultProviders = [
+		EnvironmentProvider::class,
 		LogServiceProvider::class,
 		ViewServiceProvider::class,
 	];
@@ -51,9 +53,7 @@ final class App
 
 	public static function init(string $projectRoot): self
 	{
-		self::$_instance = new self($projectRoot);
-		Environment::load(Path::root());
-		return self::$_instance;
+		return self::$_instance = new self($projectRoot);
 	}
 
 
@@ -110,13 +110,14 @@ final class App
 
 
 	/**
-	 * @return App
-	 * @throws ErrorException
+	 * @return Application
 	 */
 	public static function getInstance(): self
 	{
-		if (empty(self::$_instance))
+		if (empty(self::$_instance)) {
+			/** @noinspection PhpUnhandledExceptionInspection */
 			throw new ErrorException(self::class . "has not been initialized.");
+		}
 		return self::$_instance;
 	}
 

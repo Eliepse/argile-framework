@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\Http\Middleware;
 
-use Eliepse\Argile\App;
+use Eliepse\Argile\Core\Application;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -38,7 +38,7 @@ class FlashFormInputsMiddleware implements MiddlewareInterface
 		}
 
 		foreach ($inputs as $name => $value) {
-			App::getInstance()->container->get(Messages::class)->addMessage("old.$name", $value);
+			Application::getInstance()->container->get(Messages::class)->addMessage("old.$name", $value);
 		}
 
 		return $handler->handle($request);

@@ -4,7 +4,7 @@ namespace Eliepse\Argile\Http\Middleware;
 
 use DateInterval;
 use DateTime;
-use Eliepse\Argile\App;
+use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Http\Responses\ViewResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -56,15 +56,15 @@ class MaintenanceMiddleware implements MiddlewareInterface
 	private function generateBypassToken(): string
 	{
 		$token = base64_encode(random_bytes(32));
-		App::getInstance()->getCache()->save($this->tokenKey, $token, 0);
+		Application::getInstance()->getCache()->save($this->tokenKey, $token, 0);
 		return $token;
 	}
 
 
 	private function getOrNewToken(): string
 	{
-		if (App::getInstance()->getCache()->contains($this->tokenKey)) {
-			return App::getInstance()->getCache()->fetch($this->tokenKey);
+		if (Application::getInstance()->getCache()->contains($this->tokenKey)) {
+			return Application::getInstance()->getCache()->fetch($this->tokenKey);
 		}
 
 		return $this->generateBypassToken();
