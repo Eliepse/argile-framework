@@ -1,10 +1,10 @@
 <?php
 
-namespace Eliepse\Argile\Tests\View;
+namespace Eliepse\Argile\Tests\View\Loaders;
 
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Tests\TestCase;
-use Eliepse\Argile\View\ViewFileSystemLoader;
+use Eliepse\Argile\View\Loaders\ViewFileSystemLoader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Templating\TemplateNameParser;
 
@@ -22,7 +22,7 @@ class ViewFileSystemLoaderTest extends TestCase
 	public function testLoadAbsolutePath(): void
 	{
 		$loader = $this->getLoader();
-		$storage = $loader->load($this->nameParser->parse(__DIR__ . "/fixtures/hello.view"));
+		$storage = $loader->load($this->nameParser->parse(__DIR__ . "/../fixtures/hello.view"));
 		$this->assertNotFalse($storage);
 		$this->assertEquals("Hello World <?php # comment ?>", $storage->getContent());
 	}
@@ -47,7 +47,7 @@ class ViewFileSystemLoaderTest extends TestCase
 
 	private function getLoader(): ViewFileSystemLoader
 	{
-		$filesystem = new ViewFileSystemLoader([__DIR__ . "/fixtures/%name%"]);
+		$filesystem = new ViewFileSystemLoader([__DIR__ . "/../fixtures/%name%"]);
 		$filesystem->setLogger(Application::getInstance()->container->get(LoggerInterface::class));
 		return $filesystem;
 	}
