@@ -1,6 +1,6 @@
 <?php
 
-namespace Eliepse\Argile\View;
+namespace Eliepse\Argile\View\Loaders;
 
 use ErrorException;
 use Symfony\Component\Templating\Loader\FilesystemLoader;

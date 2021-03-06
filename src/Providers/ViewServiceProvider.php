@@ -4,8 +4,8 @@ namespace Eliepse\Argile\Providers;
 
 use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
+use Eliepse\Argile\View\Loaders\ViewFileSystemLoader;
 use Eliepse\Argile\View\ViewFactory;
-use Eliepse\Argile\View\ViewFileSystemLoader;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Templating\PhpEngine;
