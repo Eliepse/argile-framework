@@ -110,6 +110,21 @@ final class Application
 
 
 	/**
+	 * Resolve an object that has been stored in the container.
+	 *
+	 * @param string $name The classname, or some other key
+	 *
+	 * @return mixed
+	 * @throws \DI\DependencyException
+	 * @throws \DI\NotFoundException
+	 */
+	public function resolve(string $name): mixed
+	{
+		return $this->container->get($name);
+	}
+
+
+	/**
 	 * @return Application
 	 */
 	public static function getInstance(): self
