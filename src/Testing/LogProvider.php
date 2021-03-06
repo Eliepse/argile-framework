@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\Testing;
 
-final class LogServiceProvider extends \Eliepse\Argile\Providers\LogServiceProvider
+final class LogProvider extends \Eliepse\Argile\Providers\LogProvider
 {
 	protected function getLogDirectory(): string
 	{

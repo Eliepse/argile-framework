@@ -7,9 +7,9 @@ use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
 use Eliepse\Argile\Providers\EnvironmentProvider;
-use Eliepse\Argile\Providers\LogServiceProvider;
+use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
-use Eliepse\Argile\Providers\ViewServiceProvider;
+use Eliepse\Argile\Providers\ViewProvider;
 use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\View\ViewFileSystemLoader;
@@ -37,8 +37,8 @@ final class Application
 	 */
 	public static array $defaultProviders = [
 		EnvironmentProvider::class,
-		LogServiceProvider::class,
-		ViewServiceProvider::class,
+		LogProvider::class,
+		ViewProvider::class,
 	];
 
 

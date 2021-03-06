@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\Testing;
 
-final class ViewServiceProvider extends \Eliepse\Argile\Providers\ViewServiceProvider
+final class ViewProvider extends \Eliepse\Argile\Providers\ViewProvider
 {
 	protected function getViewDirectory(): string
 	{

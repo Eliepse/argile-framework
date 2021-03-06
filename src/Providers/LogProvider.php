@@ -8,7 +8,7 @@ use Monolog\Handler\RotatingFileHandler;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 
-class LogServiceProvider extends ServiceProvider
+class LogProvider extends ServiceProvider
 {
 	public function register(): void
 	{

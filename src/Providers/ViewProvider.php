@@ -11,7 +11,7 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Templating\PhpEngine;
 use Symfony\Component\Templating\TemplateNameParser;
 
-class ViewServiceProvider extends ServiceProvider
+class ViewProvider extends ServiceProvider
 {
 
 	public function register(): void
