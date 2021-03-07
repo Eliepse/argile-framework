@@ -106,7 +106,7 @@ final class ViewFactory
 			// For now, we don't support cache revalidation
 			// TODO: support cache revalidation
 			if (is_null($parsedTemplate = $this->cacheLoader->load($template))) {
-				$parsedTemplate = $this->viewLoader->load($template);
+				$parsedTemplate = $this->parser->parse($this->viewLoader->load($template));
 			}
 
 			$this->cacheLoader->saveTemplate($template, $parsedTemplate);
