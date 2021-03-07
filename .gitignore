@@ -1,4 +1,5 @@
 .idea/
 vendor/
 tests/logs/*
+tests/cache/
 *.cache

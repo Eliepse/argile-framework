@@ -1,6 +1,6 @@
 <?php
 
-namespace Eliepse\Argile\Tests\View;
+namespace Eliepse\Argile\Tests\Unit\View;
 
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\ViewFactory;
