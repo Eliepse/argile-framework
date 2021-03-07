@@ -2,6 +2,7 @@
 
 namespace Eliepse\Argile\Tests;
 
+use Eliepse\Argile\Config\ConfigurationManager;
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Testing\EnvironmentProvider;
 use Eliepse\Argile\Testing\LogProvider;
@@ -9,15 +10,21 @@ use Eliepse\Argile\Testing\ViewProvider;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
+	protected Application $app;
+
+
 	public function __construct(?string $name = null, array $data = [], $dataName = '')
 	{
 		parent::__construct($name, $data, $dataName);
 
-		$app = Application::init(__DIR__);
-		$app->boot([
+		$this->app = Application::init(__DIR__);
+		$this->app->boot([
 			EnvironmentProvider::class,
 			LogProvider::class,
 			ViewProvider::class,
 		]);
+		$this->app->register(ConfigurationManager::class, function () {
+			return new ConfigurationManager(__DIR__ . "/fixtures/config/");
+		});
 	}
 }
