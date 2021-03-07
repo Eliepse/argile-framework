@@ -2,14 +2,15 @@
 
 namespace Eliepse\Argile\Providers;
 
-use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\View\Loaders\ViewFileSystemLoader;
+use Eliepse\Argile\View\Loaders\ViewCacheLoader;
+use Eliepse\Argile\View\Loaders\ViewLoader;
+use Eliepse\Argile\View\Loaders\ViewStaticLoader;
+use Eliepse\Argile\View\Parsers\GraveurParser;
 use Eliepse\Argile\View\ViewFactory;
 use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Templating\PhpEngine;
-use Symfony\Component\Templating\TemplateNameParser;
+use Symfony\Component\Filesystem\Filesystem;
 
 class ViewProvider extends ServiceProvider
 {
@@ -17,24 +18,34 @@ class ViewProvider extends ServiceProvider
 	public function register(): void
 	{
 		$this->app->register(ViewFactory::class, function (ContainerInterface $c) {
-			$viewCachePath = Env::isProduction() ? $this->getCacheDirectory() : null;
-			$filesystemLoader = new ViewFileSystemLoader($this->getViewDirectory(), $viewCachePath);
-			$filesystemLoader->setLogger($c->get(LoggerInterface::class));
-			$engine = new PhpEngine(new TemplateNameParser(), $filesystemLoader);
-			return new ViewFactory($engine);
+			$fileSystem = $c->get(Filesystem::class);
+
+			return new ViewFactory(
+				new ViewStaticLoader($fileSystem, $this->getStaticDirectory()),
+				new ViewCacheLoader($fileSystem, $this->getCacheDirectory()),
+				new ViewLoader($this->getViewDirectory()),
+				new GraveurParser(),
+				$c->get(LoggerInterface::class)
+			);
 		});
+	}
+
+
+	protected function getStaticDirectory(): string
+	{
+		return Path::storage("framework/views/static/");
 	}
 
 
 	protected function getCacheDirectory(): string
 	{
-		return Path::storage("framework/views/");
+		return Path::storage("framework/views/cache/");
 	}
 
 
 	protected function getViewDirectory(): string
 	{
-		return Path::resources("views/%name%");
+		return Path::resources("views/");
 	}
 
 

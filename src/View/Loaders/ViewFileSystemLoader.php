@@ -11,13 +11,9 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
 
 final class ViewFileSystemLoader extends FilesystemLoader
 {
-	private ?string $cachePath;
-
-
-	public function __construct($templatePathPatterns, string $cachePath = null)
+	public function __construct($templatePathPatterns)
 	{
 		parent::__construct($templatePathPatterns);
-		$this->cachePath = $cachePath;
 	}
 
 

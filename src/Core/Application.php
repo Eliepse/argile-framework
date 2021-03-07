@@ -12,7 +12,7 @@ use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Providers\ViewProvider;
 use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\View\ViewFileSystemLoader;
+use Eliepse\Argile\View\Loaders\ViewFileSystemLoader;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -150,24 +150,9 @@ final class Application
 	}
 
 
-	public function getTemplatingEngine(): PhpEngine
-	{
-		$viewCachePath = Env::isProduction() ? Path::storage("framework/views/") : null;
-		$filesystem = new ViewFileSystemLoader([Path::resources("views/%name%")], $viewCachePath);
-		$filesystem->setLogger($this->logger);
-		return new PhpEngine(new TemplateNameParser(), $filesystem);
-	}
-
-
 	public function getSlim(): \Slim\App
 	{
 		return $this->app;
-	}
-
-
-	public function getTemplateEngine(): EngineInterface
-	{
-		return $this->templating;
 	}
 
 
