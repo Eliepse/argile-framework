@@ -6,6 +6,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Eliepse\Argile\Config\ConfigurationManager;
 use Eliepse\Argile\Core\Application;
+use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\Testing\EnvironmentProvider;
 use Eliepse\Argile\Testing\LogProvider;
 use Eliepse\Argile\Testing\ViewProvider;
@@ -32,7 +33,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		});
 
 		$this->app->register(ConfigurationManager::class, function () {
-			return new ConfigurationManager(__DIR__ . "/fixtures/config/");
+			return new ConfigurationManager(__DIR__ . "/Fixtures/config/");
 		});
 	}
 
@@ -42,5 +43,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		/** @var Filesystem $fs */
 		$fs = $this->app->resolve(Filesystem::class);
 		$fs->remove(__DIR__ . "/cache");
+		$fs->remove(Path::storage());
 	}
 }

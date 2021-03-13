@@ -21,6 +21,6 @@ final class ViewProvider extends \Eliepse\Argile\Providers\ViewProvider
 
 	protected function getViewDirectory(): string
 	{
-		return __DIR__ . "/../../tests/fixtures/views/";
+		return __DIR__ . "/../../tests/Fixtures/views/";
 	}
 }
