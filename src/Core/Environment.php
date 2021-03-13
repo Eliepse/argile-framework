@@ -25,6 +25,19 @@ final class Environment implements EnvironmentInterface
 		foreach ($envs as $key => $value) {
 			$repository->set($key, $value);
 		}
+
+		return new self($repository);
+	}
+
+
+	static public function createMutableFromArray(array $envs): self
+	{
+		$repository = RepositoryBuilder::createWithDefaultAdapters()->make();
+
+		foreach ($envs as $key => $value) {
+			$repository->set($key, $value);
+		}
+
 		return new self($repository);
 	}
 
@@ -121,5 +134,11 @@ final class Environment implements EnvironmentInterface
 		}
 
 		return true;
+	}
+
+
+	public function getRepository(): RepositoryInterface
+	{
+		return $this->repository;
 	}
 }

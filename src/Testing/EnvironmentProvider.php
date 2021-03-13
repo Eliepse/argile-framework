@@ -9,6 +9,6 @@ final class EnvironmentProvider extends \Eliepse\Argile\Providers\EnvironmentPro
 {
 	protected function getRepository(): EnvironmentInterface
 	{
-		return Environment::createFromArray(getenv());
+		return Environment::createMutableFromArray(getenv());
 	}
 }
