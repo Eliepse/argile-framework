@@ -76,6 +76,8 @@ final class Application
 		$builder->useAnnotations(false);
 		$this->container = $builder->build();
 
+		$this->container->set(Application::class, $this);
+
 		// TODO: load providers from configs
 		/** @var ProviderInterface[] $providers */
 		$providers = array_map(
