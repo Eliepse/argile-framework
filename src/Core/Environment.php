@@ -92,7 +92,7 @@ final class Environment implements EnvironmentInterface
 	public function validate(string $key, array $rules, bool $throw = true): bool
 	{
 		$required = $rules['required'] ?? false;
-		$empty = $rules['empty'] ?? false;
+		$empty = $rules['empty'] ?? true;
 
 		if ($required && ! $this->has($key)) {
 			if ($throw) {
