@@ -5,13 +5,13 @@ namespace Eliepse\Argile\Tests\Unit\Commands;
 use Eliepse\Argile\Commands\CompileViewsCommand;
 use Eliepse\Argile\Config\Configuration;
 use Eliepse\Argile\Config\ConfigurationManager;
-use Eliepse\Argile\Tests\ConsoleTestCase;
+use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\Loaders\GraveurTemplateReference;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
 use Eliepse\Argile\View\ViewFactory;
 use Symfony\Component\Console\Command\Command;
 
-class CompileViewsCommandTest extends ConsoleTestCase
+class CompileViewsCommandTest extends TestCase
 {
 	public function testNothingToCompile(): void
 	{

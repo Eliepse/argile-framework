@@ -10,6 +10,7 @@ use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\Testing\EnvironmentProvider;
 use Eliepse\Argile\Testing\LogProvider;
 use Eliepse\Argile\Testing\ViewProvider;
+use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\Filesystem\Filesystem;
 
 class TestCase extends \PHPUnit\Framework\TestCase
@@ -35,6 +36,14 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		$this->app->register(ConfigurationManager::class, function () {
 			return new ConfigurationManager(__DIR__ . "/Fixtures/config/");
 		});
+	}
+
+
+	protected function execute(string $command, array $inputs = []): CommandTester
+	{
+		$tester = new CommandTester($this->app->container->make($command));
+		$tester->execute($inputs);
+		return $tester;
 	}
 
 

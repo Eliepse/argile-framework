@@ -4,11 +4,11 @@ namespace Eliepse\Argile\Tests\Unit\Commands;
 
 use Eliepse\Argile\Commands\CompileRoutesCommand;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\Tests\ConsoleTestCase;
 use Eliepse\Argile\Tests\fixtures\Controllers\BuildtimeTestController;
+use Eliepse\Argile\Tests\TestCase;
 use Symfony\Component\Console\Command\Command;
 
-class CompileRoutesCommandTest extends ConsoleTestCase
+class CompileRoutesCommandTest extends TestCase
 {
 	public function testNothingToCompile(): void
 	{
