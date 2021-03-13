@@ -23,4 +23,12 @@ final class ConfigurationManagerTest extends \Eliepse\Argile\Tests\TestCase
 		$this->assertIsObject($manager->get("test"));
 		$this->assertEquals("bar", $manager->get("test")->get("foo"));
 	}
+
+
+	public function testCheckConfiguration(): void
+	{
+		$manager = new ConfigurationManager(__DIR__ . "/../../fixtures/config/");
+		$this->assertTrue($manager->has("test"));
+		$this->assertFalse($manager->has("unknown"));
+	}
 }

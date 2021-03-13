@@ -16,7 +16,12 @@ final class Config
 		}
 
 		$namespace = array_shift($keys);
+		/** @var ConfigurationManager $manager */
 		$manager = Application::getInstance()->resolve(ConfigurationManager::class);
+
+		if (! $manager->has($namespace)) {
+			return $default;
+		}
 
 		return $manager->get($namespace)->get(join(".", $keys), $default);
 	}

@@ -13,11 +13,9 @@ final class ConfigTest extends \Eliepse\Argile\Tests\TestCase
 	}
 
 
-	public function testThrowErrorOnUndefinedNamespace(): void
+	public function testReturnsDefaultOnUndefinedNamespace(): void
 	{
-		$namespace = "unknown";
-		$this->expectException(\ErrorException::class);
-		$this->expectExceptionMessage("Unable to load a configuration file: $namespace");
-		Config::get("$namespace.foo");
+		$this->assertNull(Config::get("unknown.foo"));
+		$this->assertEquals("default!", Config::get("unknown.bar", "default!"));
 	}
 }
