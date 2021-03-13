@@ -19,7 +19,7 @@ class ViewProvider extends ServiceProvider
 	{
 		$this->app->register(ViewFactory::class, function (ContainerInterface $c) {
 			$fileSystem = $c->get(Filesystem::class);
-
+			
 			return new ViewFactory(
 				new ViewStaticLoader($fileSystem, $this->getStaticDirectory()),
 				new ViewCacheLoader($fileSystem, $this->getCacheDirectory()),

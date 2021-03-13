@@ -6,18 +6,15 @@ use DI\Bridge\Slim\Bridge;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
+use Eliepse\Argile\Providers\CacheProvider;
 use Eliepse\Argile\Providers\ConfigurationProvider;
 use Eliepse\Argile\Providers\EnvironmentProvider;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Providers\ViewProvider;
-use Eliepse\Argile\Support\Env;
-use Eliepse\Argile\Support\Path;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Slim\App;
-use Symfony\Component\Templating\PhpEngine;
 use function DI\factory as DIFactory;
 
 final class Application
@@ -26,7 +23,6 @@ final class Application
 	private string $project_directory;
 
 	private \Slim\App $app;
-	private PhpEngine $templating;
 	private PhpFileCache $cache;
 	private Logger $logger;
 	public Container $container;
@@ -38,6 +34,7 @@ final class Application
 		EnvironmentProvider::class,
 		ConfigurationProvider::class,
 		LogProvider::class,
+		CacheProvider::class,
 		ViewProvider::class,
 	];
 
@@ -79,6 +76,7 @@ final class Application
 		$builder->useAnnotations(false);
 		$this->container = $builder->build();
 
+		// TODO: load providers from configs
 		/** @var ProviderInterface[] $providers */
 		$providers = array_map(
 			fn($classname) => new $classname($this),
@@ -140,13 +138,6 @@ final class Application
 	public function getProjectDirectory(): string
 	{
 		return $this->project_directory;
-	}
-
-
-	public function loadCacheSystem(): void
-	{
-		$this->cache = new PhpFileCache(Path::storage("framework/cache"));
-		$this->cache->setNamespace(Env::get("APP_CACHE_PREFIX", "simpleApp_"));
 	}
 
 
