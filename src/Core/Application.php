@@ -6,19 +6,18 @@ use DI\Bridge\Slim\Bridge;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
+use Eliepse\Argile\Providers\ConfigurationProvider;
 use Eliepse\Argile\Providers\EnvironmentProvider;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Providers\ViewProvider;
 use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\View\Loaders\ViewFileSystemLoader;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Templating\EngineInterface;
+use Slim\App;
 use Symfony\Component\Templating\PhpEngine;
-use Symfony\Component\Templating\TemplateNameParser;
 use function DI\factory as DIFactory;
 
 final class Application
@@ -37,6 +36,7 @@ final class Application
 	 */
 	public static array $defaultProviders = [
 		EnvironmentProvider::class,
+		ConfigurationProvider::class,
 		LogProvider::class,
 		ViewProvider::class,
 	];
