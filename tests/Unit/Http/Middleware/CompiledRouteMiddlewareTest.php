@@ -3,6 +3,8 @@
 namespace Eliepse\Argile\Tests\Unit\Http\Middleware;
 
 use Eliepse\Argile\Commands\CompileRoutesCommand;
+use Eliepse\Argile\Core\Environment;
+use Eliepse\Argile\Core\EnvironmentInterface;
 use Eliepse\Argile\Http\Middleware\CompiledRouteMiddleware;
 use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\Tests\Fixtures\Controllers\BuildtimeTestController;
@@ -11,7 +13,20 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 
 class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 {
-	public function testDoesNotUseCompiledFile(): void
+	private EnvironmentInterface|Environment $env;
+	private ServerRequestFactory $factory;
+
+
+	protected function setUp(): void
+	{
+		parent::setUp();
+		$this->env = $this->app->resolve(EnvironmentInterface::class);
+		$this->env->getRepository()->set("ROUTES_COMPILE", true);
+		$this->factory = new ServerRequestFactory();
+	}
+
+
+	public function testRuntimeRoute(): void
 	{
 		$route = $this->app->getSlim()->get("/generated", RuntimeTestController::class)
 			->addMiddleware(new CompiledRouteMiddleware());
@@ -22,13 +37,12 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 
 		$staticFilepath = Path::storage("framework/routes/static/" . hash('sha256', $pattern));
 
-		$factory = new ServerRequestFactory();
-		$response = $route->run($factory->createServerRequest("GET", $pattern));
+		$response = $route->run($this->factory->createServerRequest("GET", $pattern));
 		$this->assertNotEquals($staticFilepath, $response->getBody()->getMetadata("uri"));
 	}
 
 
-	public function testUseCompiledFile(): void
+	public function testBuildtimeRoute(): void
 	{
 		$route = $this->app->getSlim()->get("/compiled", BuildtimeTestController::class)
 			->addMiddleware(new CompiledRouteMiddleware());
@@ -38,8 +52,24 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 
 		$staticFilepath = Path::storage("framework/routes/static/" . hash('sha256', $pattern));
 
-		$factory = new ServerRequestFactory();
-		$response = $route->run($factory->createServerRequest("GET", $pattern));
+		$response = $route->run($this->factory->createServerRequest("GET", $pattern));
 		$this->assertEquals($staticFilepath, $response->getBody()->getMetadata("uri"));
+	}
+
+
+	public function testShouldUseRuntime(): void
+	{
+		$this->env->getRepository()->set("ROUTES_COMPILE", false);
+
+		$route = $this->app->getSlim()->get("/compiled", BuildtimeTestController::class)
+			->addMiddleware(new CompiledRouteMiddleware());
+		$pattern = $route->getPattern();
+
+		$this->execute(CompileRoutesCommand::class);
+
+		$staticFilepath = Path::storage("framework/routes/static/" . hash('sha256', $pattern));
+
+		$response = $route->run($this->factory->createServerRequest("GET", $pattern));
+		$this->assertNotEquals($staticFilepath, $response->getBody()->getMetadata("uri"));
 	}
 }
