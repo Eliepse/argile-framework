@@ -13,6 +13,7 @@ use Symfony\Component\Templating\Loader\LoaderInterface;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
 use Symfony\Component\Templating\Storage\StringStorage;
+use Symfony\Component\Templating\TemplateReferenceInterface;
 
 final class ViewFactory
 {
@@ -94,7 +95,7 @@ final class ViewFactory
 	 */
 	public function render(string $viewName, array $parameters = []): string
 	{
-		$template = new GraveurTemplateReference($viewName);
+		$template = $this->getViewReference($viewName);
 
 		// Support view compilation at buildtime
 		if ($this->isCompiledViewEnabled() && $this->isCompiledTemplate($template)) {
@@ -201,6 +202,12 @@ final class ViewFactory
 		}
 
 		return $this->escapers[$context];
+	}
+
+
+	public function getViewReference(string $viewName): TemplateReferenceInterface
+	{
+		return new GraveurTemplateReference($viewName);
 	}
 
 
