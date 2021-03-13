@@ -45,9 +45,10 @@ final class CompileRoutesCommand extends Command
 		$routes = $this->app->getSlim()->getRouteCollector()->getRoutes();
 
 		$this->compilable = array_filter($routes, function ($route) {
-			return is_string($route->getCallable())
+			$callableName = $route->getCallable();
+			return is_string($callableName)
 				&& in_array("GET", $route->getMethods())
-				&& class_implements($route, BuildtimeController::class);
+				&& class_implements($callableName, BuildtimeController::class);
 		});
 
 		if (empty($this->compilable)) {
@@ -61,6 +62,7 @@ final class CompileRoutesCommand extends Command
 		foreach ($this->compilable as $route) {
 			$pattern = $route->getPattern();
 			$request = $requestFactory->createServerRequest("GET", $pattern);
+
 
 			$this->fs->dumpFile(
 				Path::storage("framework/routes/static/" . hash('sha256', $pattern)),
