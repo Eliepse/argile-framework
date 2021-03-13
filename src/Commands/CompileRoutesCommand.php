@@ -5,8 +5,6 @@ namespace Eliepse\Argile\Commands;
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Http\Controllers\BuildtimeController;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\View\Loaders\ViewStaticLoader;
-use Eliepse\Argile\View\ViewFactory;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,19 +15,15 @@ final class CompileRoutesCommand extends Command
 	static protected $defaultName = "compile:routes";
 
 	protected array $compilable = [];
-	protected ViewStaticLoader $staticLoader;
 
 
 	public function __construct(
 		private Application $app,
-		private ViewFactory $viewFactory,
 		private Filesystem $fs,
 		string $name = null
 	)
 	{
 		parent::__construct($name);
-
-		$this->staticLoader = $this->viewFactory->getLoaders()["static"];
 	}
 
 
