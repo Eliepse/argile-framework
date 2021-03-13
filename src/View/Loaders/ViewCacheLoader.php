@@ -5,7 +5,6 @@ namespace Eliepse\Argile\View\Loaders;
 use Doctrine\Common\Cache\Cache;
 use Eliepse\Argile\Support\Env;
 use Symfony\Component\Templating\Loader\Loader;
-use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
 use Symfony\Component\Templating\Storage\StringStorage;
 use Symfony\Component\Templating\TemplateReferenceInterface;
@@ -33,7 +32,7 @@ final class ViewCacheLoader extends Loader
 		}
 
 		if ($this->cache->contains($key)) {
-			return new FileStorage($this->cache->fetch($key));
+			return new StringStorage($this->cache->fetch($key));
 		}
 
 		return null;
@@ -42,7 +41,8 @@ final class ViewCacheLoader extends Loader
 
 	public function isFresh(TemplateReferenceInterface $template, int $time): bool
 	{
-		return time() >= $time + Env::get("VIEW_CACHE_TTL", 7 * 24 * 3_600);
+		return $this->cache->contains($template->getLogicalName())
+			&& time() >= $time + Env::get("VIEW_CACHE_TTL", 7 * 24 * 3_600);
 	}
 
 
