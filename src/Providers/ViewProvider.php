@@ -2,13 +2,14 @@
 
 namespace Eliepse\Argile\Providers;
 
+use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\FilesystemCache;
 use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\View\Loaders\ViewCacheLoader;
 use Eliepse\Argile\View\Loaders\ViewLoader;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
 use Eliepse\Argile\View\Parsers\GraveurParser;
 use Eliepse\Argile\View\ViewFactory;
-use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Filesystem\Filesystem;
 
@@ -17,15 +18,13 @@ class ViewProvider extends ServiceProvider
 
 	public function register(): void
 	{
-		$this->app->register(ViewFactory::class, function (ContainerInterface $c) {
-			$fileSystem = $c->get(Filesystem::class);
-			
+		$this->app->register(ViewFactory::class, function (Filesystem $fs, LoggerInterface $logger) {
 			return new ViewFactory(
-				new ViewStaticLoader($fileSystem, $this->getStaticDirectory()),
-				new ViewCacheLoader($fileSystem, $this->getCacheDirectory()),
+				new ViewStaticLoader($fs, $this->getStaticDirectory()),
+				new ViewCacheLoader($this->getCache()),
 				new ViewLoader($this->getViewDirectory()),
 				new GraveurParser(),
-				$c->get(LoggerInterface::class)
+				$logger
 			);
 		});
 	}
@@ -37,9 +36,9 @@ class ViewProvider extends ServiceProvider
 	}
 
 
-	protected function getCacheDirectory(): string
+	protected function getCache(): Cache
 	{
-		return Path::storage("framework/views/cache/");
+		return new FilesystemCache("framework/views/cache/");
 	}
 
 

@@ -2,6 +2,9 @@
 
 namespace Eliepse\Argile\Testing;
 
+use Doctrine\Common\Cache\ArrayCache;
+use Doctrine\Common\Cache\Cache;
+
 final class ViewProvider extends \Eliepse\Argile\Providers\ViewProvider
 {
 	protected function getStaticDirectory(): string
@@ -10,9 +13,9 @@ final class ViewProvider extends \Eliepse\Argile\Providers\ViewProvider
 	}
 
 
-	protected function getCacheDirectory(): string
+	protected function getCache(): Cache
 	{
-		return "";
+		return new ArrayCache();
 	}
 
 

@@ -2,8 +2,8 @@
 
 namespace Eliepse\Argile\View\Loaders;
 
+use Doctrine\Common\Cache\Cache;
 use Eliepse\Argile\Support\Env;
-use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Templating\Loader\Loader;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
@@ -18,10 +18,7 @@ final class ViewCacheLoader extends Loader
 	private array $runtimeCache = [];
 
 
-	public function __construct(
-		private Filesystem $filesystem,
-		private string $cachePath
-	)
+	public function __construct(private Cache $cache)
 	{
 		//
 	}
@@ -29,25 +26,17 @@ final class ViewCacheLoader extends Loader
 
 	public function load(TemplateReferenceInterface $template): ?Storage
 	{
-		$hashedName = $this->getHashedFilename($template);
+		$key = $template->getLogicalName();
 
-		if (isset($this->runtimeCache[$hashedName])) {
-			return new StringStorage($this->runtimeCache[$hashedName]);
+		if (isset($this->runtimeCache[$key])) {
+			return new StringStorage($this->runtimeCache[$key]);
 		}
 
-		$path = $this->cachePath . $hashedName;
-
-		if (is_readable($path)) {
-			return new FileStorage($path);
+		if ($this->cache->contains($key)) {
+			return new FileStorage($this->cache->fetch($key));
 		}
 
 		return null;
-	}
-
-
-	private function getHashedFilename(TemplateReferenceInterface $template): string
-	{
-		return hash('sha256', $template->getLogicalName());
 	}
 
 
@@ -59,14 +48,16 @@ final class ViewCacheLoader extends Loader
 
 	public function saveTemplate(TemplateReferenceInterface $template, Storage $content): void
 	{
-		$hashedName = $this->getHashedFilename($template);
-		$this->runtimeCache[$hashedName] = $content->getContent();
-		$this->filesystem->dumpFile($this->cachePath . $hashedName . ".php", $this->runtimeCache[$hashedName]);
+		$key = $template->getLogicalName();
+		$value = $content->getContent();
+
+		$this->runtimeCache[$key] = $value;
+		$this->cache->save($key, $value);
 	}
 
 
-	public function getBasePath(): string
+	public function getCache(): Cache
 	{
-		return $this->cachePath;
+		return $this->cache;
 	}
 }

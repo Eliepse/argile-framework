@@ -226,9 +226,7 @@ final class ViewFactory
 
 	private function isCompiledViewEnabled(): bool
 	{
-		return ! Env::isDevelopment()
-			&& ! empty($this->staticLoader->getBasePath())
-			&& Env::get("VIEW_COMPILED", false);
+		return Env::get("VIEW_COMPILED", false);
 	}
 
 
@@ -241,9 +239,7 @@ final class ViewFactory
 
 	private function isCachedViewEnabled(): bool
 	{
-		return ! Env::isDevelopment()
-			&& ! empty($this->cacheLoader->getBasePath())
-			&& Env::get("VIEW_CACHE", true);
+		return Env::get("VIEW_CACHE", Env::isProduction());
 	}
 
 
