@@ -26,18 +26,12 @@ final class CompiledRouteMiddleware implements \Psr\Http\Server\MiddlewareInterf
 	 */
 	public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
 	{
-		if (! $this->enabled) {
-			return $handler->handle($request);
-		}
+		if ($this->enabled && $request->getMethod() === "GET") {
+			$filepath = Path::storage("framework/routes/static/" . hash('sha256', $request->getRequestTarget()));
 
-		if ($request->getMethod() !== "GET") {
-			return $handler->handle($request);
-		}
-
-		$filepath = Path::storage("framework/routes/static/" . hash('sha256', $request->getRequestTarget()));
-
-		if (file_exists($filepath)) {
-			return new Response(body: (new StreamFactory())->createStreamFromFile($filepath));
+			if (file_exists($filepath)) {
+				return new Response(body: (new StreamFactory())->createStreamFromFile($filepath));
+			}
 		}
 
 		return $handler->handle($request);
