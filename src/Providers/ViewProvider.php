@@ -38,7 +38,7 @@ class ViewProvider extends ServiceProvider
 
 	protected function getCache(): Cache
 	{
-		return new FilesystemCache("framework/views/cache/");
+		return new FilesystemCache(Path::storage("framework/views/cache/"));
 	}
 
 
