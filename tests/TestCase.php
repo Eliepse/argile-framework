@@ -7,6 +7,7 @@ use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Testing\EnvironmentProvider;
 use Eliepse\Argile\Testing\LogProvider;
 use Eliepse\Argile\Testing\ViewProvider;
+use Symfony\Component\Filesystem\Filesystem;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -26,5 +27,13 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		$this->app->register(ConfigurationManager::class, function () {
 			return new ConfigurationManager(__DIR__ . "/fixtures/config/");
 		});
+	}
+
+
+	protected function tearDown(): void
+	{
+		/** @var Filesystem $fs */
+		$fs = $this->app->resolve(Filesystem::class);
+		$fs->remove(__DIR__ . "/cache");
 	}
 }

@@ -6,7 +6,7 @@ final class ViewProvider extends \Eliepse\Argile\Providers\ViewProvider
 {
 	protected function getStaticDirectory(): string
 	{
-		return "";
+		return __DIR__ . "/../../tests/cache/framework/views/static/";
 	}
 
 

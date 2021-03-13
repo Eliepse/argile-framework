@@ -206,7 +206,7 @@ final class ViewFactory
 
 
 	/**
-	 * @return array<string, LoaderInterface>
+	 * @return array
 	 */
 	public function getLoaders(): array
 	{
