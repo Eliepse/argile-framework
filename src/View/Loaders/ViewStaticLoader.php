@@ -31,7 +31,7 @@ final class ViewStaticLoader extends Loader
 	}
 
 
-	private function getHashedFilename(TemplateReferenceInterface $template): string
+	public function getHashedFilename(TemplateReferenceInterface $template): string
 	{
 		return hash('sha256', $template->getLogicalName());
 	}

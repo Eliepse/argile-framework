@@ -205,6 +205,19 @@ final class ViewFactory
 	}
 
 
+	/**
+	 * @return array<string, LoaderInterface>
+	 */
+	public function getLoaders(): array
+	{
+		return [
+			"view" => $this->viewLoader,
+			"cache" => $this->cacheLoader,
+			"static" => $this->staticLoader,
+		];
+	}
+
+
 	public function getViewReference(string $viewName): TemplateReferenceInterface
 	{
 		return new GraveurTemplateReference($viewName);
