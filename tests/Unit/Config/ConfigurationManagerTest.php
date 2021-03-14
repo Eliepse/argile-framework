@@ -19,7 +19,7 @@ final class ConfigurationManagerTest extends \Eliepse\Argile\Tests\TestCase
 
 	public function testLoadConfigurationFile(): void
 	{
-		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/config/");
+		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/configs/");
 		$this->assertIsObject($manager->get("test"));
 		$this->assertEquals("bar", $manager->get("test")->get("foo"));
 	}
@@ -27,7 +27,7 @@ final class ConfigurationManagerTest extends \Eliepse\Argile\Tests\TestCase
 
 	public function testCheckConfiguration(): void
 	{
-		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/config/");
+		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/configs/");
 		$this->assertTrue($manager->has("test"));
 		$this->assertFalse($manager->has("unknown"));
 	}

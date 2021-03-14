@@ -6,12 +6,9 @@ use DI\Bridge\Slim\Bridge;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
-use Eliepse\Argile\Providers\CacheProvider;
-use Eliepse\Argile\Providers\ConfigurationProvider;
-use Eliepse\Argile\Providers\EnvironmentProvider;
+use Eliepse\Argile\Config\ConfigurationManager;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
-use Eliepse\Argile\Providers\ViewProvider;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -19,24 +16,17 @@ use function DI\factory as DIFactory;
 
 final class Application
 {
-	private static self $_instance;
-	private string $project_directory;
+	static private self $_instance;
 
+	private string $project_directory;
+	private ?string $environmentPath = null;
+	private ?string $configPath = null;
 	private \Slim\App $app;
 	private PhpFileCache $cache;
 	private Logger $logger;
-	public Container $container;
+	private bool $booted = false;
 
-	/**
-	 * @var string[]
-	 */
-	public static array $defaultProviders = [
-		EnvironmentProvider::class,
-		ConfigurationProvider::class,
-		LogProvider::class,
-		CacheProvider::class,
-		ViewProvider::class,
-	];
+	public Container $container;
 
 
 	private function __construct(string $project_directory)
@@ -45,12 +35,92 @@ final class Application
 			throw new ErrorException("The project directory is not a valid or does not exist ($project_directory).");
 		}
 		$this->project_directory = $project_directory;
+
+		$builder = new ContainerBuilder();
+		$builder->useAutowiring(true);
+		$builder->useAnnotations(false);
+		$this->container = $builder->build();
+		$this->container->set(Application::class, $this);
 	}
 
 
 	public static function init(string $projectRoot): self
 	{
 		return self::$_instance = new self($projectRoot);
+	}
+
+
+	public function withBasePath($path): self
+	{
+		if ($this->booted) {
+			return $this;
+		}
+
+		$this->project_directory = $path;
+		return $this;
+	}
+
+
+	public function withEnvironmentPath(string $path): self
+	{
+		if ($this->booted) {
+			return $this;
+		}
+
+		$this->environmentPath = $path;
+		return $this;
+	}
+
+
+	/**
+	 * @param array $env
+	 *
+	 * @return $this
+	 * @internal
+	 */
+	public function withTestEnvironment(array $env = []): self
+	{
+		if ($this->booted) {
+			return $this;
+		}
+
+		$this->register(EnvironmentInterface::class, function () use ($env) {
+			return Environment::createMutableFromArray(array_merge(getenv(), $env));
+		});
+
+		return $this;
+	}
+
+
+	private function registerEnvironment(): void
+	{
+		if ($this->container->has(EnvironmentInterface::class)) {
+			return;
+		}
+
+		$this->register(EnvironmentInterface::class, function () {
+			return Environment::createFromFile($this->environmentPath ?: $this->project_directory);
+		});
+	}
+
+
+	public function withConfigPath(string $path): self
+	{
+		if ($this->booted) {
+			return $this;
+		}
+
+		$this->configPath = $path;
+
+		return $this;
+	}
+
+
+	private function registerConfiguration(): void
+	{
+		$this->register(ConfigurationManager::class, function () {
+			return new ConfigurationManager($this->configPath ?: $this->project_directory . DIRECTORY_SEPARATOR . "configs/");
+		});
 	}
 
 
@@ -65,35 +135,47 @@ final class Application
 
 
 	/**
-	 * @param string[] $providersClassnames
-	 *
 	 * @throws \Exception
 	 */
-	public function boot(array $providersClassnames = []): void
+	public function boot(): void
 	{
-		$builder = new ContainerBuilder();
-		$builder->useAutowiring(true);
-		$builder->useAnnotations(false);
-		$this->container = $builder->build();
-
-		$this->container->set(Application::class, $this);
-
-		// TODO: load providers from configs
-		/** @var ProviderInterface[] $providers */
-		$providers = array_map(
-			fn($classname) => new $classname($this),
-			array_filter($providersClassnames, fn($classname) => is_a($classname, ProviderInterface::class, true))
-		);
-
-		foreach ($providers as $provider) {
-			$provider->register();
+		if ($this->booted) {
+			return;
 		}
 
-		foreach ($providers as $provider) {
-			$provider->boot();
-		}
+		$this->registerBaseProviders();
+		$this->registerConfiguredProviders();
 
 		$this->app = Bridge::create($this->container);
+		$this->booted = true;
+	}
+
+
+	private function registerBaseProviders(): void
+	{
+		$this->registerEnvironment();
+		$this->registerConfiguration();
+
+		$providers = [
+			new LogProvider($this),
+		];
+
+		array_map(fn($provider) => $provider->register(), $providers);
+		array_map(fn($provider) => $provider->boot(), $providers);
+	}
+
+
+	private function registerConfiguredProviders(): void
+	{
+		/** @var ConfigurationManager $configs */
+		$configs = $this->resolve(ConfigurationManager::class);
+
+		$providers = $configs->get("app")->get("providers", []);
+		$providers = array_filter($providers, fn($class) => is_a($class, ProviderInterface::class, true));
+		$providers = array_map(fn($classname) => new $classname($this), $providers);
+
+		array_map(fn($provider) => $provider->register(), $providers);
+		array_map(fn($provider) => $provider->boot(), $providers);
 	}
 
 
