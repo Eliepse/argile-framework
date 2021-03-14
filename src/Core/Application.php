@@ -161,7 +161,6 @@ final class Application
 		];
 
 		array_map(fn($provider) => $provider->register(), $providers);
-		array_map(fn($provider) => $provider->boot(), $providers);
 	}
 
 
@@ -175,7 +174,6 @@ final class Application
 		$providers = array_map(fn($classname) => new $classname($this), $providers);
 
 		array_map(fn($provider) => $provider->register(), $providers);
-		array_map(fn($provider) => $provider->boot(), $providers);
 	}
 
 

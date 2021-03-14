@@ -46,7 +46,4 @@ class ViewProvider extends ServiceProvider
 	{
 		return Path::resources("views/");
 	}
-
-
-	public function boot(): void { }
 }

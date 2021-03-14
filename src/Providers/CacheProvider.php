@@ -16,10 +16,4 @@ final class CacheProvider extends ServiceProvider
 			return new FilesystemCache(Path::storage("framework/cache/"));
 		});
 	}
-
-
-	public function boot(): void
-	{
-		//
-	}
 }

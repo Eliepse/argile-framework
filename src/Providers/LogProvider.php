@@ -26,9 +26,6 @@ class LogProvider extends ServiceProvider
 	}
 
 
-	public function boot(): void { }
-
-
 	protected function getLogDirectory(): string
 	{
 		return Path::storage("logs/log.log");

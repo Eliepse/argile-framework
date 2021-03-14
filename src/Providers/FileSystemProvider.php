@@ -14,10 +14,4 @@ final class FileSystemProvider extends ServiceProvider
 			return new Filesystem();
 		});
 	}
-
-
-	public function boot(): void
-	{
-		// TODO: Implement boot() method.
-	}
 }
