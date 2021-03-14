@@ -20,7 +20,7 @@ final class CompileViewsCommand extends Command
 
 	public function __construct(
 		private ViewFactory $viewFactory,
-		ConfigurationManager $configs,
+		private ConfigurationManager $configs,
 		string $name = null
 	)
 	{
@@ -29,7 +29,7 @@ final class CompileViewsCommand extends Command
 		$this->staticLoader = $this->viewFactory->getLoaders()["static"];
 
 		if ($configs->has("view")) {
-			$this->compilable = $configs->get("view")->get("compile", []);
+			$this->compilable = $configs->get("view")->get("compile.views", []);
 		}
 	}
 
@@ -43,8 +43,13 @@ final class CompileViewsCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (true !== $this->configs->get("view")->get("compile.enable", false)) {
+			$output->writeln("View compilation disabled.");
+			return Command::SUCCESS;
+		}
+
 		if (empty($this->compilable)) {
-			$output->writeln("No view to cache.");
+			$output->writeln("No view to compile.");
 			return Command::SUCCESS;
 		}
 

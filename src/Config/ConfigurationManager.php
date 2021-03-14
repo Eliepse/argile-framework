@@ -24,7 +24,12 @@ final class ConfigurationManager
 	{
 		$path = $this->configPath . "$namespace.php";
 
-		if (! is_readable($path)) {
+		// Try default
+		if (! file_exists($path)) {
+			$path = __DIR__ . "/../../configs/$namespace.php";
+		}
+
+		if (! file_exists($path)) {
 			throw new \ErrorException("Unable to load a configuration file: $namespace");
 		}
 

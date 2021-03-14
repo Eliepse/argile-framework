@@ -16,7 +16,7 @@ final class ViewLoader extends Loader
 	{
 		$path = $this->viewPath . $template->getPath();
 
-		if (is_readable($path)) {
+		if (file_exists($path)) {
 			return new FileStorage($path);
 		}
 

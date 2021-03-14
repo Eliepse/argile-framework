@@ -22,7 +22,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		$this->app = Application::init(__DIR__);
 		$this->app->withTestEnvironment()
 			->withBasePath(__DIR__)
-			->withConfigPath(__DIR__ . DIRECTORY_SEPARATOR . "Fixtures" . DIRECTORY_SEPARATOR . "configs/");
+			->withConfigPath(__DIR__ . "/Fixtures/configs/");
 
 		$this->app->register(Cache::class, function () {
 			return new ArrayCache();
