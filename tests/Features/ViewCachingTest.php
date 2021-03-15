@@ -3,6 +3,7 @@
 namespace Eliepse\Argile\Tests\Features;
 
 use Doctrine\Common\Cache\Cache;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Core\Environment;
 use Eliepse\Argile\Core\EnvironmentInterface;
 use Eliepse\Argile\Tests\TestCase;
@@ -10,7 +11,7 @@ use Eliepse\Argile\View\ViewFactory;
 
 final class ViewCachingTest extends TestCase
 {
-	private EnvironmentInterface|Environment $env;
+	private ConfigRepository $configs;
 	private ViewFactory $factory;
 	private Cache $cache;
 
@@ -18,8 +19,7 @@ final class ViewCachingTest extends TestCase
 	protected function setUp(): void
 	{
 		parent::setUp();
-		$this->env = $this->app->resolve(EnvironmentInterface::class);
-		$this->env->getRepository()->set("VIEW_CACHE", true);
+		$this->configs = $this->app->resolve(ConfigRepository::class);
 		$this->factory = $this->app->resolve(ViewFactory::class);
 		$this->cache = $this->factory->getLoaders()["cache"]->getCache();
 	}
@@ -27,7 +27,7 @@ final class ViewCachingTest extends TestCase
 
 	public function testCacheInactive(): void
 	{
-		$this->env->getRepository()->set("VIEW_CACHE", false);
+		$this->configs->set("view.cache.enable", false);
 		$view = "hello";
 		$ref = $this->factory->getViewReference($view);
 		$this->factory->render($view);
@@ -37,7 +37,7 @@ final class ViewCachingTest extends TestCase
 
 	public function testCacheView(): void
 	{
-		$this->env->getRepository()->set("VIEW_CACHE", true);
+		$this->configs->set("view.cache.enable", true);
 		$view = "hello";
 		$ref = $this->factory->getViewReference($view);
 		$this->factory->render($view);
@@ -47,7 +47,7 @@ final class ViewCachingTest extends TestCase
 
 	public function testCacheNestedViews(): void
 	{
-		$this->env->getRepository()->set("VIEW_CACHE", true);
+		$this->configs->set("view.cache.enable", true);
 		$view = "village";
 		$rootRef = $this->factory->getViewReference($view);
 		$childRef = $this->factory->getViewReference("villageBuilding");

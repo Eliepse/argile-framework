@@ -3,8 +3,8 @@
 namespace Eliepse\Argile\Tests\Unit\Commands;
 
 use Eliepse\Argile\Commands\CompileViewsCommand;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Config\Configuration;
-use Eliepse\Argile\Config\ConfigurationManager;
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\Loaders\GraveurTemplateReference;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
@@ -13,28 +13,46 @@ use Symfony\Component\Console\Command\Command;
 
 class CompileViewsCommandTest extends TestCase
 {
-	public function testNothingToCompile(): void
+	public function testCompilationDisabled(): void
 	{
 		$tester = $this->execute(CompileViewsCommand::class);
 		$this->assertEquals(Command::SUCCESS, $tester->getStatusCode());
-		$this->assertEquals("No view to cache.\n", $tester->getDisplay(true));
+		$this->assertEquals("View compilation disabled.\n", $tester->getDisplay(true));
+	}
+
+
+	public function testNothingToCompile(): void
+	{
+		/**
+		 * @var ConfigRepository $configs
+		 * @var ViewFactory $viewFactory
+		 */
+		$configs = $this->app->resolve(ConfigRepository::class);
+		$configs->get("view"); // Load the config file
+		$configs->set("view.compile.enable", true);
+
+		$tester = $this->execute(CompileViewsCommand::class);
+		$this->assertEquals(Command::SUCCESS, $tester->getStatusCode());
+		$this->assertEquals("No view to compile.\n", $tester->getDisplay(true));
 	}
 
 
 	public function testCompiledViews(): void
 	{
 		/**
-		 * @var ConfigurationManager $configs
+		 * @var ConfigRepository $configs
 		 * @var ViewFactory $viewFactory
 		 */
-		$configs = $this->app->resolve(ConfigurationManager::class);
+		$configs = $this->app->resolve(ConfigRepository::class);
 		$viewFactory = $this->app->resolve(ViewFactory::class);
 
 		/** @var ViewStaticLoader $staticLoader */
 		$staticLoader = $viewFactory->getLoaders()["static"];
 		$filename = $staticLoader->getHashedFilename(new GraveurTemplateReference("hello"));
 
-		$configs->set(new Configuration("view", ["compile" => ["hello"]]));
+		$configs->set("view.compile.enable", true);
+		$configs->set("view.compile.views", ["hello"]);
+
 		$tester = $this->execute(CompileViewsCommand::class);
 
 		$this->assertEquals(Command::SUCCESS, $tester->getStatusCode());

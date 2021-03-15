@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\Commands;
 
-use Eliepse\Argile\Config\ConfigurationManager;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
 use Eliepse\Argile\View\ViewFactory;
 use Symfony\Component\Console\Command\Command;
@@ -20,7 +20,7 @@ final class CompileViewsCommand extends Command
 
 	public function __construct(
 		private ViewFactory $viewFactory,
-		private ConfigurationManager $configs,
+		private ConfigRepository $configs,
 		string $name = null
 	)
 	{
@@ -29,7 +29,7 @@ final class CompileViewsCommand extends Command
 		$this->staticLoader = $this->viewFactory->getLoaders()["static"];
 
 		if ($configs->has("view")) {
-			$this->compilable = $configs->get("view")->get("compile.views", []);
+			$this->compilable = $configs->get("view.compile.views", []);
 		}
 	}
 
@@ -43,7 +43,7 @@ final class CompileViewsCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		if (true !== $this->configs->get("view")->get("compile.enable", false)) {
+		if (true !== $this->configs->get("view.compile.enable", false)) {
 			$output->writeln("View compilation disabled.");
 			return Command::SUCCESS;
 		}

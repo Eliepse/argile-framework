@@ -2,33 +2,41 @@
 
 namespace Eliepse\Argile\Tests\Unit\Config;
 
-use Eliepse\Argile\Config\Configuration;
-use Eliepse\Argile\Config\ConfigurationManager;
+use Eliepse\Argile\Config\ConfigRepository;
 
 final class ConfigurationManagerTest extends \Eliepse\Argile\Tests\TestCase
 {
 	public function testSetConfiguration(): void
 	{
-		$manager = new ConfigurationManager("");
-		$manager->set($config = new Configuration("test", ["foo" => "bar"]));
+		$repository = new ConfigRepository("");
+		$repository->set("test", $configs = ["foo" => "bar"]);
 
-		$this->assertEquals($config, $manager->get("test"));
-		$this->assertEquals("bar", $manager->get("test")->get("foo"));
+		$this->assertEquals($configs, $repository->get("test"));
+		$this->assertEquals("bar", $repository->get("test.foo"));
+	}
+
+	public function testNonSetValueReturnDefault(): void
+	{
+		$repository = new ConfigRepository("");
+		$repository->set("test", $configs = ["foo" => "bar"]);
+
+		$this->assertEquals("baz", $repository->get("test.unknown", "baz"));
+		$this->assertEquals("baz", $repository->get("unknown", "baz"));
 	}
 
 
 	public function testLoadConfigurationFile(): void
 	{
-		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/configs/");
-		$this->assertIsObject($manager->get("test"));
-		$this->assertEquals("bar", $manager->get("test")->get("foo"));
+		$repository = new ConfigRepository(__DIR__ . "/../../Fixtures/configs/");
+		$this->assertIsArray($repository->get("test"));
+		$this->assertEquals("bar", $repository->get("test.foo"));
 	}
 
 
 	public function testCheckConfiguration(): void
 	{
-		$manager = new ConfigurationManager(__DIR__ . "/../../Fixtures/configs/");
-		$this->assertTrue($manager->has("test"));
-		$this->assertFalse($manager->has("unknown"));
+		$repository = new ConfigRepository(__DIR__ . "/../../Fixtures/configs/");
+		$this->assertTrue($repository->has("test"));
+		$this->assertFalse($repository->has("unknown"));
 	}
 }

@@ -6,7 +6,7 @@ use DI\Bridge\Slim\Bridge;
 use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
-use Eliepse\Argile\Config\ConfigurationManager;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use ErrorException;
@@ -118,8 +118,8 @@ final class Application
 
 	private function registerConfiguration(): void
 	{
-		$this->register(ConfigurationManager::class, function () {
-			return new ConfigurationManager($this->configPath ?: $this->project_directory . DIRECTORY_SEPARATOR . "configs/");
+		$this->register(ConfigRepository::class, function () {
+			return new ConfigRepository($this->configPath ?: $this->project_directory . DIRECTORY_SEPARATOR . "configs/");
 		});
 	}
 
@@ -166,10 +166,10 @@ final class Application
 
 	private function registerConfiguredProviders(): void
 	{
-		/** @var ConfigurationManager $configs */
-		$configs = $this->resolve(ConfigurationManager::class);
+		/** @var ConfigRepository $configs */
+		$configs = $this->resolve(ConfigRepository::class);
 
-		$providers = $configs->get("app")->get("providers", []);
+		$providers = $configs->get("app.providers", []);
 		$providers = array_filter($providers, fn($class) => is_a($class, ProviderInterface::class, true));
 		$providers = array_map(fn($classname) => new $classname($this), $providers);
 

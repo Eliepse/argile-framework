@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\View;
 
-use Eliepse\Argile\Config\ConfigurationManager;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\View\Loaders\GraveurTemplateReference;
@@ -31,7 +31,7 @@ final class ViewFactory
 		private LoaderInterface $viewLoader,
 		private ParserInterface $parser,
 		private LoggerInterface $logger,
-		private ConfigurationManager $configs,
+		private ConfigRepository $configs,
 	)
 	{
 		// This initialization of escapers has been copied from
@@ -228,7 +228,7 @@ final class ViewFactory
 
 	private function isCompiledViewEnabled(): bool
 	{
-		return $this->configs->get("view")->get("compile.enable");
+		return $this->configs->get("view.compile.enable");
 	}
 
 
@@ -240,7 +240,7 @@ final class ViewFactory
 
 	private function isCachedViewEnabled(): bool
 	{
-		return $this->configs->get("view")->get("cache.enable");
+		return $this->configs->get("view.cache.enable");
 	}
 
 
