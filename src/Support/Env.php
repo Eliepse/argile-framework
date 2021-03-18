@@ -3,7 +3,6 @@
 namespace Eliepse\Argile\Support;
 
 use Eliepse\Argile\Core\Application;
-use Eliepse\Argile\Core\EnvironmentInterface;
 
 final class Env
 {
@@ -15,24 +14,24 @@ final class Env
 	 */
 	public static function get(string $key, mixed $default = null): mixed
 	{
-		return Application::getInstance()->container->get(EnvironmentInterface::class)->get($key, $default);
+		return Application::getInstance()->getEnvironment()->get($key, $default);
 	}
 
 
 	public static function isDevelopment(): bool
 	{
-		return self::get("APP_ENV") === "local";
+		return Application::getInstance()->isDevelopment();
 	}
 
 
 	public static function isTesting(): bool
 	{
-		return self::get("APP_ENV") === "testing";
+		return Application::getInstance()->isTesting();
 	}
 
 
 	public static function isProduction(): bool
 	{
-		return ! self::isDevelopment() && ! self::isTesting();
+		return Application::getInstance()->isProduction();
 	}
 }

@@ -35,6 +35,7 @@ final class Application
 		if (! is_dir($project_directory)) {
 			throw new ErrorException("The project directory is not a valid or does not exist ($project_directory).");
 		}
+
 		$this->project_directory = $project_directory;
 		$this->environmentPath = $project_directory;
 
@@ -224,6 +225,12 @@ final class Application
 	}
 
 
+	public function getEnvironment(): EnvironmentInterface
+	{
+		return $this->environment;
+	}
+
+
 	public function getCache(): PhpFileCache
 	{
 		return $this->cache;
@@ -233,6 +240,24 @@ final class Application
 	public function getLogger(): LoggerInterface
 	{
 		return $this->logger;
+	}
+
+
+	public function isDevelopment(): bool
+	{
+		return $this->environment->get("APP_ENV") === "local";
+	}
+
+
+	public function isTesting(): bool
+	{
+		return $this->environment->get("APP_ENV") === "testing";
+	}
+
+
+	public function isProduction(): bool
+	{
+		return ! $this->isDevelopment() && ! $this->isTesting();
 	}
 
 
