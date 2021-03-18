@@ -25,6 +25,7 @@ final class Application
 	private PhpFileCache $cache;
 	private Logger $logger;
 	private bool $booted = false;
+	private Environment $environment;
 
 	public Container $container;
 
@@ -35,6 +36,13 @@ final class Application
 			throw new ErrorException("The project directory is not a valid or does not exist ($project_directory).");
 		}
 		$this->project_directory = $project_directory;
+		$this->environmentPath = $project_directory;
+
+		if (getenv("APP_ENV") === "testing") {
+			$this->environment = Environment::createMutableFromArray(array_merge(getenv()));
+		} else {
+			$this->environment = Environment::createFromFile($this->environmentPath);
+		}
 
 		$builder = new ContainerBuilder();
 		$builder->useAutowiring(true);
@@ -61,17 +69,6 @@ final class Application
 	}
 
 
-	public function withEnvironmentPath(string $path): self
-	{
-		if ($this->booted) {
-			return $this;
-		}
-
-		$this->environmentPath = $path;
-		return $this;
-	}
-
-
 	/**
 	 * @param array $env
 	 *
@@ -84,9 +81,7 @@ final class Application
 			return $this;
 		}
 
-		$this->register(EnvironmentInterface::class, function () use ($env) {
-			return Environment::createMutableFromArray(array_merge(getenv(), $env));
-		});
+		$this->environment = Environment::createMutableFromArray(array_merge(getenv(), $env));
 
 		return $this;
 	}
@@ -99,7 +94,7 @@ final class Application
 		}
 
 		$this->register(EnvironmentInterface::class, function () {
-			return Environment::createFromFile($this->environmentPath ?: $this->project_directory);
+			return $this->environment;
 		});
 	}
 
