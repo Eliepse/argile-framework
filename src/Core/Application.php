@@ -37,7 +37,7 @@ final class Application
 		}
 
 		$this->project_directory = $project_directory;
-		$this->environmentPath = $this->project_directory;
+		$this->environmentPath = $project_directory;
 
 		if (getenv("APP_ENV") === "testing") {
 			$this->environment = Environment::createMutableFromArray(array_merge(getenv()));
@@ -48,11 +48,6 @@ final class Application
 		$builder = new ContainerBuilder();
 		$builder->useAutowiring(true);
 		$builder->useAnnotations(false);
-
-		if ($this->isProduction()) {
-			$builder->enableCompilation($this->project_directory . "/bootstrap/cache/");
-		}
-
 		$this->container = $builder->build();
 		$this->container->set(Application::class, $this);
 	}
