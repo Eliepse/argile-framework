@@ -39,8 +39,8 @@ final class Application
 		$this->project_directory = $project_directory;
 		$this->environmentPath = $project_directory;
 
-		if (getenv("APP_ENV") === "testing") {
-			$this->environment = Environment::createMutableFromArray(array_merge(getenv()));
+		if (($_ENV["APP_ENV"] ?? null) === "testing") {
+			$this->environment = Environment::createMutableFromArray($_ENV);
 		} else {
 			$this->environment = Environment::createFromFile($this->environmentPath);
 		}
@@ -82,7 +82,7 @@ final class Application
 			return $this;
 		}
 
-		$this->environment = Environment::createMutableFromArray(array_merge(getenv(), $env));
+		$this->environment = Environment::createMutableFromArray(array_merge($_ENV, $env));
 
 		return $this;
 	}
