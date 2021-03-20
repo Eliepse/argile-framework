@@ -82,4 +82,10 @@ final class ConfigRepository
 
 		return $this->loadConfiguration($namespace);
 	}
+
+
+	public function all(): array
+	{
+		return $this->configs;
+	}
 }
