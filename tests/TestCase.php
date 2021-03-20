@@ -45,6 +45,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		/** @var Filesystem $fs */
 		$fs = $this->app->resolve(Filesystem::class);
 		$fs->remove(__DIR__ . "/cache");
+		$fs->remove(__DIR__ . "/bootstrap");
 		$fs->remove(Path::storage());
 	}
 }

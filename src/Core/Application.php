@@ -9,6 +9,7 @@ use Doctrine\Common\Cache\PhpFileCache;
 use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
+use Eliepse\Argile\Support\Path;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -39,8 +40,15 @@ final class Application
 		$this->project_directory = $project_directory;
 		$this->environmentPath = $project_directory;
 
-		if (($_ENV["APP_ENV"] ?? null) === "testing") {
+		$appEnv = $_ENV["APP_ENV"] ?? null;
+		$envCachePath = $this->project_directory . "/bootstrap/cache/env.php";
+
+		if ($appEnv === "testing") {
 			$this->environment = Environment::createMutableFromArray($_ENV);
+		} else if ($appEnv === "production" && is_file($envCachePath)) {
+			/** @noinspection PhpIncludeInspection */
+			$envs = include $envCachePath;
+			$this->environment = Environment::createFromArray($envs);
 		} else {
 			$this->environment = Environment::createFromFile($this->environmentPath);
 		}
