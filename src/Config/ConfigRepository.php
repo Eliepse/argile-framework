@@ -10,7 +10,14 @@ final class ConfigRepository
 	private array $unknownNamespaces = [];
 
 
-	public function __construct(private string $configPath) { }
+	public function __construct(private string $configPath)
+	{
+		// If the configPath point to a file we load the configuration.
+		// Used for compiled configs.
+		if (str_ends_with($this->configPath, ".php")) {
+			$this->configs = include $$this->configPath;
+		}
+	}
 
 
 	public function get(string $key, mixed $default = null): mixed

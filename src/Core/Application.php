@@ -9,7 +9,6 @@ use Doctrine\Common\Cache\PhpFileCache;
 use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
-use Eliepse\Argile\Support\Path;
 use ErrorException;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
@@ -122,7 +121,13 @@ final class Application
 
 	private function registerConfiguration(): void
 	{
-		$this->register(ConfigRepository::class, function () {
+		$this->register(ConfigRepository::class, function (Application $app) {
+			$cachePath = $app->project_directory . "/bootstrap/configs.php";
+			
+			if ($_ENV["APP_ENV"] === "production" && is_file($cachePath)) {
+				return new ConfigRepository($cachePath);
+			}
+
 			return new ConfigRepository($this->configPath ?: $this->project_directory . DIRECTORY_SEPARATOR . "configs/");
 		});
 	}
@@ -248,6 +253,12 @@ final class Application
 	public function getLogger(): LoggerInterface
 	{
 		return $this->logger;
+	}
+
+
+	public function getConfigPath(): string
+	{
+		return $this->configPath;
 	}
 
 
