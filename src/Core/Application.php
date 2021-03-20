@@ -114,7 +114,7 @@ final class Application
 				return new ConfigRepository($cachePath);
 			}
 
-			return new ConfigRepository($this->project_directory);
+			return new ConfigRepository($this->configPath);
 		});
 	}
 

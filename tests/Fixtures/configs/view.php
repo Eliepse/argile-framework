@@ -1,19 +1,20 @@
 <?php
 
 use Eliepse\Argile\Support\Env;
+use Eliepse\Argile\Support\Path;
 
 return [
 
-	"viewsPath" => __DIR__ . "/../views/",
+	"viewsPath" => Path::root("Fixtures/views/"),
 
 	"cache" => [
 		"enable" => Env::get("VIEW_CACHE", false),
-		"cachePath" => __DIR__ . "/../../cache/framework/views/cache/",
+		"cachePath" => Path::root("cache/framework/views/cache/"),
 	],
 
 	"compile" => [
 		"enable" => Env::get("VIEW_COMPILE", false),
-		"cachePath" => __DIR__ . "/../../cache/framework/views/static/",
+		"cachePath" => Path::root("cache/framework/views/static/"),
 		"views" => [],
 	],
 

@@ -4,6 +4,7 @@ namespace Eliepse\Argile\Tests;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Tester\CommandTester;
@@ -21,7 +22,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 		$this->app = Application::init(__DIR__);
 		$this->app->withTestEnvironment()
-			->withConfigPath(__DIR__ . "/Fixtures/configs/");
+			->withConfigPath(Path::root("Fixtures/configs/"));
 
 		$this->app->register(Cache::class, function () {
 			return new ArrayCache();
