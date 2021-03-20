@@ -30,6 +30,7 @@ final class Application
 	public Container $container;
 
 
+	/** @noinspection PhpIncludeInspection */
 	private function __construct(string $project_directory)
 	{
 		$this->project_directory = $project_directory;
@@ -41,8 +42,7 @@ final class Application
 
 		if ($appEnv === "testing") {
 			$this->environment = Environment::createMutableFromArray($_ENV);
-		} else if ($appEnv === "production" && is_file($envCachePath)) {
-			/** @noinspection PhpIncludeInspection */
+		} else if (is_file($envCachePath)) {
 			$envs = include $envCachePath;
 			$this->environment = Environment::createFromArray($envs);
 		} else {
@@ -110,7 +110,7 @@ final class Application
 		$this->register(ConfigRepository::class, function (Application $app) {
 			$cachePath = $app->project_directory . "/bootstrap/configs.php";
 
-			if ($_ENV["APP_ENV"] === "production" && is_file($cachePath)) {
+			if (is_file($cachePath)) {
 				return new ConfigRepository($cachePath);
 			}
 
