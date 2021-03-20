@@ -32,10 +32,6 @@ final class Application
 
 	private function __construct(string $project_directory)
 	{
-		if (! is_dir($project_directory)) {
-			throw new ErrorException("The project directory is not a valid or does not exist ($project_directory).");
-		}
-
 		$this->project_directory = $project_directory;
 		$this->environmentPath = $project_directory;
 		$this->configPath = $project_directory . "/configs/";
