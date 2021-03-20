@@ -67,17 +67,6 @@ final class Application
 	}
 
 
-	public function withBasePath($path): self
-	{
-		if ($this->booted) {
-			return $this;
-		}
-
-		$this->project_directory = $path;
-		return $this;
-	}
-
-
 	/**
 	 * @param array $env
 	 *

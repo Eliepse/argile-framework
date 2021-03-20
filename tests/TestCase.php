@@ -21,7 +21,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 		$this->app = Application::init(__DIR__);
 		$this->app->withTestEnvironment()
-			->withBasePath(__DIR__)
 			->withConfigPath(__DIR__ . "/Fixtures/configs/");
 
 		$this->app->register(Cache::class, function () {
