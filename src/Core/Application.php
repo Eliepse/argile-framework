@@ -19,8 +19,8 @@ final class Application
 	static private self $_instance;
 
 	private string $project_directory;
-	private ?string $environmentPath = null;
-	private ?string $configPath = null;
+	private string $environmentPath;
+	private string $configPath;
 	private \Slim\App $app;
 	private PhpFileCache $cache;
 	private Logger $logger;
@@ -38,6 +38,7 @@ final class Application
 
 		$this->project_directory = $project_directory;
 		$this->environmentPath = $project_directory;
+		$this->configPath = $project_directory . "/configs/";
 
 		$appEnv = $_ENV["APP_ENV"] ?? null;
 		$envCachePath = $this->project_directory . "/bootstrap/cache/env.php";
@@ -123,12 +124,12 @@ final class Application
 	{
 		$this->register(ConfigRepository::class, function (Application $app) {
 			$cachePath = $app->project_directory . "/bootstrap/configs.php";
-			
+
 			if ($_ENV["APP_ENV"] === "production" && is_file($cachePath)) {
 				return new ConfigRepository($cachePath);
 			}
 
-			return new ConfigRepository($this->configPath ?: $this->project_directory . DIRECTORY_SEPARATOR . "configs/");
+			return new ConfigRepository($this->project_directory);
 		});
 	}
 
