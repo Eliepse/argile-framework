@@ -23,7 +23,6 @@ final class Application
 	private string $configPath;
 	private \Slim\App $app;
 	private PhpFileCache $cache;
-	private Logger $logger;
 	private bool $booted = false;
 	private Environment $environment;
 
@@ -233,12 +232,6 @@ final class Application
 	public function getCache(): PhpFileCache
 	{
 		return $this->cache;
-	}
-
-
-	public function getLogger(): LoggerInterface
-	{
-		return $this->logger;
 	}
 
 

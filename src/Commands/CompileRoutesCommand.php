@@ -4,7 +4,9 @@ namespace Eliepse\Argile\Commands;
 
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Http\Controllers\BuildtimeController;
+use Eliepse\Argile\Http\Router;
 use Eliepse\Argile\Support\Path;
+use Slim\Interfaces\RouteInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -14,6 +16,7 @@ final class CompileRoutesCommand extends Command
 {
 	static protected $defaultName = "compile:routes";
 
+	/** @var RouteInterface[] */
 	protected array $compilable = [];
 
 
@@ -36,14 +39,8 @@ final class CompileRoutesCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$routes = $this->app->getSlim()->getRouteCollector()->getRoutes();
-
-		$this->compilable = array_filter($routes, function ($route) {
-			$callableName = $route->getCallable();
-			return is_string($callableName)
-				&& in_array("GET", $route->getMethods())
-				&& class_implements($callableName, BuildtimeController::class);
-		});
+		$allRoutes = $this->app->getSlim()->getRouteCollector()->getRoutes();
+		$this->compilable = Router::getBuildtimRoutes();
 
 		if (empty($this->compilable)) {
 			$output->writeln("No route to compile.");
@@ -53,17 +50,14 @@ final class CompileRoutesCommand extends Command
 		$requestFactory = new \Slim\Psr7\Factory\ServerRequestFactory();
 		$output->writeln("Start compiling routes:");
 
-		foreach ($this->compilable as $route) {
-			$pattern = $route->getPattern();
-			$request = $requestFactory->createServerRequest("GET", $pattern);
-
-
+		foreach ($this->compilable as $id => $route) {
+			$request = $requestFactory->createServerRequest("GET", $route->getPattern());
 			$this->fs->dumpFile(
-				Path::storage("framework/routes/static/" . hash('sha256', $pattern)),
+				Path::storage("framework/routes/static/$id"),
 				$route->run($request)->getBody()
 			);
 
-			$output->writeln(" - " . $pattern);
+			$output->writeln(" - " . $route->getPattern());
 		}
 
 		$output->writeln("Done compiling routes.");
