@@ -55,7 +55,7 @@ final class CompileConfigsCommand extends Command
 		foreach ($filesToLoad as $configPath) {
 			$namespace = pathinfo($configPath, PATHINFO_FILENAME);
 			$configs[$namespace] = include $configPath;
-			$output->writeln("\n- $namespace");
+			$output->writeln("- $namespace");
 		}
 
 		$this->fs->dumpFile(Path::root("bootstrap/cache/configs.php"), "<?php return " . var_export($configs, true) . ";");
