@@ -6,7 +6,7 @@ use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use League\Flysystem\Filesystem;
 
 final class CompileEnvironmentCommand extends Command
 {
@@ -31,7 +31,7 @@ final class CompileEnvironmentCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$this->fs->dumpFile(Path::root("bootstrap/cache/env.php"), "<?php return " . var_export($_ENV, true) . ";");
+		$this->fs->write("bootstrap/cache/env.php", "<?php return " . var_export($_ENV, true) . ";");
 		$output->writeln("Done compiling environment.");
 		return Command::SUCCESS;
 	}

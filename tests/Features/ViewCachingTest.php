@@ -4,8 +4,6 @@ namespace Eliepse\Argile\Tests\Features;
 
 use Doctrine\Common\Cache\Cache;
 use Eliepse\Argile\Config\ConfigRepository;
-use Eliepse\Argile\Core\Environment;
-use Eliepse\Argile\Core\EnvironmentInterface;
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\ViewFactory;
 

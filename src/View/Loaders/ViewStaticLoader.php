@@ -2,7 +2,7 @@
 
 namespace Eliepse\Argile\View\Loaders;
 
-use Symfony\Component\Filesystem\Filesystem;
+use League\Flysystem\Filesystem;
 use Symfony\Component\Templating\Loader\Loader;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\Templating\Storage\Storage;
@@ -45,7 +45,7 @@ final class ViewStaticLoader extends Loader
 
 	public function saveTemplate(TemplateReferenceInterface $template, Storage $content): void
 	{
-		$this->filesystem->dumpFile($this->staticPath . $this->getHashedFilename($template), $content->getContent());
+		$this->filesystem->write($this->staticPath . $this->getHashedFilename($template), $content->getContent());
 	}
 
 

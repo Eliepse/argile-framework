@@ -7,7 +7,7 @@ use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Filesystem\Filesystem;
+use League\Flysystem\Filesystem;
 
 final class CompileConfigsCommand extends Command
 {
@@ -58,7 +58,7 @@ final class CompileConfigsCommand extends Command
 			$output->writeln("- $namespace");
 		}
 
-		$this->fs->dumpFile(Path::root("bootstrap/cache/configs.php"), "<?php return " . var_export($configs, true) . ";");
+		$this->fs->write("bootstrap/cache/configs.php", "<?php return " . var_export($configs, true) . ";");
 
 		$output->writeln("Done compiling configs.");
 		return Command::SUCCESS;

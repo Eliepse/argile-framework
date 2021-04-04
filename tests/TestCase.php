@@ -4,11 +4,10 @@ namespace Eliepse\Argile\Tests;
 
 use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
-use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Core\Application;
+use Eliepse\Argile\Filesystem\StorageRepository;
 use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Tester\CommandTester;
-use Symfony\Component\Filesystem\Filesystem;
 
 class TestCase extends \PHPUnit\Framework\TestCase
 {
@@ -43,10 +42,10 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 	protected function tearDown(): void
 	{
-		/** @var Filesystem $fs */
-		$fs = $this->app->resolve(Filesystem::class);
-		$fs->remove(__DIR__ . "/cache");
-		$fs->remove(__DIR__ . "/bootstrap");
-		$fs->remove(Path::storage());
+		/** @var StorageRepository $storage */
+		$storage = $this->app->resolve(StorageRepository::class);
+		$storage->getDriver()->deleteDirectory("/cache");
+		$storage->getDriver()->deleteDirectory("/bootstrap");
+		$storage->getDriver("storage")->deleteDirectory("/");
 	}
 }

@@ -4,7 +4,7 @@ namespace Eliepse\Argile\Tests\Unit\Commands;
 
 use Eliepse\Argile\Commands\CompileViewsCommand;
 use Eliepse\Argile\Config\ConfigRepository;
-use Eliepse\Argile\Config\Configuration;
+use Eliepse\Argile\Support\Path;
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\Loaders\GraveurTemplateReference;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
@@ -56,7 +56,7 @@ class CompileViewsCommandTest extends TestCase
 		$tester = $this->execute(CompileViewsCommand::class);
 
 		$this->assertEquals(Command::SUCCESS, $tester->getStatusCode());
-		$this->assertFileExists(__DIR__ . "/../../cache/framework/views/static/$filename");
-		$this->assertEquals("Hello World ", file_get_contents(__DIR__ . "/../../cache/framework/views/static/$filename"));
+		$this->assertFileExists(Path::storage("framework/views/static/$filename"));
+		$this->assertEquals("Hello World ", file_get_contents(Path::storage("framework/views/static/$filename")));
 	}
 }
