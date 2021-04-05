@@ -3,17 +3,20 @@
 namespace Eliepse\Argile\Providers;
 
 use Doctrine\Common\Cache\Cache;
-use Doctrine\Common\Cache\FilesystemCache;
-use Eliepse\Argile\Support\Path;
+use Eliepse\Argile\Cache\CacheRepository;
+use Eliepse\Argile\Config\ConfigRepository;
 
 final class CacheProvider extends ServiceProvider
 {
 
 	public function register(): void
 	{
-		$this->app->register(Cache::class, function () {
-			// TODO: allow to configure global cache with configurations
-			return new FilesystemCache(Path::storage("framework/cache/"));
+		$this->app->register(CacheRepository::class, function (ConfigRepository $configs) {
+			return new CacheRepository($configs);
+		});
+
+		$this->app->register(Cache::class, function (CacheRepository $repository) {
+			return $repository->getStore();
 		});
 	}
 }
