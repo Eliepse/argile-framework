@@ -3,6 +3,7 @@
 namespace Eliepse\Argile\Providers;
 
 use Doctrine\Common\Cache\FilesystemCache;
+use Eliepse\Argile\Cache\CacheRepository;
 use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Filesystem\StorageRepository;
 use Eliepse\Argile\Support\Path;
@@ -21,11 +22,12 @@ class ViewProvider extends ServiceProvider
 		$this->app->register(ViewFactory::class, function (
 			StorageRepository $fsRepository,
 			ConfigRepository $configs,
-			LoggerInterface $logger
+			LoggerInterface $logger,
+			CacheRepository $cacheRepository,
 		) {
 			return new ViewFactory(
 				new ViewStaticLoader($fsRepository->getDriver("views")),
-				new ViewCacheLoader(new FilesystemCache(Path::storage($configs->get("view.cache.cachePath")))),
+				new ViewCacheLoader($cacheRepository->getStore($configs->get("views.cache.store"))),
 				new ViewLoader($configs->get("view.viewsPath")),
 				new GraveurParser(),
 				$logger,

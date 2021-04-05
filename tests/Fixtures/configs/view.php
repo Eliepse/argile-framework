@@ -9,12 +9,12 @@ return [
 
 	"cache" => [
 		"enable" => Env::get("VIEW_CACHE", false),
-		"cachePath" => "framework/views/cache/",
+		"store" => "views",
 	],
 
 	"compile" => [
 		"enable" => Env::get("VIEW_COMPILE", false),
-		"cachePath" => "framework/views/static/",
+		"driver" => "views",
 		"views" => [],
 	],
 

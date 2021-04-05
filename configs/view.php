@@ -9,8 +9,7 @@ return [
 
 	"cache" => [
 		"enable" => Env::get("VIEW_CACHE", false),
-		// TODO(eliepse): replace with a cache driver configuration
-		"cachePath" => "framework/views/cache/",
+		"store" => "views",
 	],
 
 	"compile" => [
