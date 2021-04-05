@@ -23,11 +23,12 @@ final class CacheRepository
 			throw new \InvalidArgumentException("Invalid configuration for cache store '$name'.");
 		}
 
-		$driver = match ($configs["driver"]) {
-			"filesystem" => new FilesystemDriver($name, $configs),
-		};
+		$driver = $configs["driver"];
 
-		return $this->stores[$name] = $driver;
+		return $this->stores[$name] = match ($driver) {
+			"filesystem" => new FilesystemDriver($name, $configs),
+			default => throw new \ErrorException("The driver '{$driver}' is not supported."),
+		};
 	}
 
 
