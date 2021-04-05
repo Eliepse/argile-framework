@@ -3,7 +3,6 @@
 namespace Eliepse\Argile\Commands;
 
 use Eliepse\Argile\Core\Application;
-use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -11,22 +10,16 @@ use League\Flysystem\Filesystem;
 
 final class CompileConfigsCommand extends Command
 {
-	static protected $defaultName = "compile:configs";
-
-
-	public function __construct(
-		private Application $app,
-		private Filesystem $fs,
-		string $name = null
-	)
+	public function __construct(private Application $app, private Filesystem $fs)
 	{
-		parent::__construct($name);
+		parent::__construct();
 	}
 
 
 	protected function configure()
 	{
-		$this->setDescription("Compile the configuration files.")
+		$this->setName("compile:configs")
+			->setDescription("Compile the configuration files.")
 			->setHelp("Prevent fetching multiple files by processing and combining configurations into a single file.");
 	}
 

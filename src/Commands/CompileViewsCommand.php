@@ -3,8 +3,10 @@
 namespace Eliepse\Argile\Commands;
 
 use Eliepse\Argile\Config\ConfigRepository;
+use Eliepse\Argile\Filesystem\StorageRepository;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
 use Eliepse\Argile\View\ViewFactory;
+use League\Flysystem\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,21 +14,21 @@ use Symfony\Component\Templating\Storage\StringStorage;
 
 final class CompileViewsCommand extends Command
 {
-	static protected $defaultName = "compile:view";
-
 	protected array $compilable = [];
 	protected ViewStaticLoader $staticLoader;
+	private ?Filesystem $fs;
 
 
 	public function __construct(
 		private ViewFactory $viewFactory,
 		private ConfigRepository $configs,
-		string $name = null
+		StorageRepository $storageRepository,
 	)
 	{
-		parent::__construct($name);
+		parent::__construct();
 
 		$this->staticLoader = $this->viewFactory->getLoaders()["static"];
+		$this->fs = $storageRepository->getDriver("storage");
 
 		if ($configs->has("view")) {
 			$this->compilable = $configs->get("view.compile.views", []);
@@ -36,13 +38,20 @@ final class CompileViewsCommand extends Command
 
 	protected function configure()
 	{
-		$this->setDescription("Compile views as static files.")
+		$this
+			->setName("compile:view")
+			->setDescription("Compile views as static files.")
 			->setHelp("It compiles the views as listed in the configuration and cache them as static files.");
 	}
 
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		if (! $this->fs) {
+			$output->writeln("The filesystem's \"storage\" driver is not available.");
+			return Command::FAILURE;
+		}
+
 		if (true !== $this->configs->get("view.compile.enable", false)) {
 			$output->writeln("View compilation disabled.");
 			return Command::SUCCESS;

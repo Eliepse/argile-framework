@@ -10,21 +10,16 @@ use League\Flysystem\Filesystem;
 
 final class CompileEnvironmentCommand extends Command
 {
-	static protected $defaultName = "compile:env";
-
-
-	public function __construct(
-		private Filesystem $fs,
-		string $name = null
-	)
+	public function __construct(private Filesystem $fs)
 	{
-		parent::__construct($name);
+		parent::__construct();
 	}
 
 
 	protected function configure()
 	{
-		$this->setDescription("Compile the environment file.")
+		$this->setName("compile:env")
+			->setDescription("Compile the environment file.")
 			->setHelp("To prevent parsing the .env at each runtime, this compile it as a php array stored in a file.");
 	}
 

@@ -15,8 +15,6 @@ use League\Flysystem\Filesystem;
 
 final class CompileRoutesCommand extends Command
 {
-	static protected $defaultName = "compile:routes";
-
 	/** @var RouteInterface[] */
 	protected array $compilable = [];
 	/**
@@ -25,13 +23,9 @@ final class CompileRoutesCommand extends Command
 	private ?Filesystem $fs;
 
 
-	public function __construct(
-		private Application $app,
-		StorageRepository $fsRepository,
-		string $name = null
-	)
+	public function __construct(private Application $app, StorageRepository $fsRepository)
 	{
-		parent::__construct($name);
+		parent::__construct();
 
 		$this->fs = $fsRepository->getDriver("storage");
 	}
@@ -39,7 +33,8 @@ final class CompileRoutesCommand extends Command
 
 	protected function configure()
 	{
-		$this->setDescription("Compile routes output as static files.")
+		$this->setName("compile:routes")
+			->setDescription("Compile routes output as static files.")
 			->setHelp("It renders the elligible routes and store them as static files.");
 	}
 
