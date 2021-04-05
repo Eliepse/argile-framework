@@ -1,0 +1,7 @@
+{% if $type === "church" %}
+{% if $count <= 1 %}A church{% else %}{{ $count }} churches{% endif %};
+{% elseif $type === "house" %}
+{% if $count <= 1 %}A house{% else %}{{ $count }} houses{% endif %};
+{% elseif $type === "cityhall" %}
+A cityhall;
+{% endif %}

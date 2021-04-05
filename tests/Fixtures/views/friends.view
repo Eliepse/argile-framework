@@ -1,0 +1,9 @@
+My name is {{ $name }}.
+{% if !empty($friends) %}
+My friends are:
+{% for $friends as $friend %}
+{{ $friend }};
+{% endfor %}
+{% else %}
+I like visiting my friends.
+{% endif %}

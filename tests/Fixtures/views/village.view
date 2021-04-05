@@ -1,0 +1,4 @@
+This village has:
+{% for $buildings as $count => $type %}
+- {% include "villageBuilding.view", ["count" => $count, "type" => $type] %}
+{% endfor %}

@@ -13,6 +13,7 @@
     "require" : {
         "php" : "^8.0",
         "ext-json" : "*",
+        "ext-iconv" : "*",
         "slim/slim" : "^4.5",
         "vlucas/phpdotenv" : "^5.2",
         "php-di/slim-bridge" : "^3.0",
@@ -21,22 +22,25 @@
         "monolog/monolog" : "^2.1",
         "symfony/templating" : "^5.1",
         "slim/psr7": "^1.2",
-        "slim/flash": "^0.4.0"
+        "slim/flash": "^0.4.0",
+        "symfony/console": "^5.2",
+        "league/flysystem": "^2.0"
     },
     "require-dev" : {
         "symfony/var-dumper" : "^5.1",
-        "phpstan/phpstan": "^0.12.42",
-        "phpunit/phpunit": "^9.3"
+        "phpunit/phpunit": "^9.5",
+        "sempro/phpunit-pretty-print": "^1.4"
     },
     "autoload" : {
         "psr-4" : {
-            "Eliepse\\Argile\\" : "src"
+            "Eliepse\\Argile\\" : "src",
+            "Eliepse\\Argile\\Tests\\" : "tests"
         }
     },
     "scripts" : {
         "test" : [
-            "@phpstan --ansi"
+            "@phpunit"
         ],
-        "phpstan" : "phpstan analyse -c phpstan.neon src --ansi"
+        "phpunit" : "phpunit tests"
     }
 }
