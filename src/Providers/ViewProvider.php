@@ -24,7 +24,7 @@ class ViewProvider extends ServiceProvider
 			LoggerInterface $logger
 		) {
 			return new ViewFactory(
-				new ViewStaticLoader($fsRepository->getDriver("storage"), $configs->get("view.compile.cachePath")),
+				new ViewStaticLoader($fsRepository->getDriver("views")),
 				new ViewCacheLoader(new FilesystemCache(Path::storage($configs->get("view.cache.cachePath")))),
 				new ViewLoader($configs->get("view.viewsPath")),
 				new GraveurParser(),

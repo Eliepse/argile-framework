@@ -10,7 +10,6 @@ use League\Flysystem\Filesystem;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Component\Templating\Storage\StringStorage;
 
 final class CompileViewsCommand extends Command
 {
@@ -28,11 +27,8 @@ final class CompileViewsCommand extends Command
 		parent::__construct();
 
 		$this->staticLoader = $this->viewFactory->getLoaders()["static"];
-		$this->fs = $storageRepository->getDriver("storage");
-
-		if ($configs->has("view")) {
-			$this->compilable = $configs->get("view.compile.views", []);
-		}
+		$this->fs = $storageRepository->getDriver("views");
+		$this->compilable = $configs->get("view.compile.views", []);
 	}
 
 
@@ -67,7 +63,7 @@ final class CompileViewsCommand extends Command
 		foreach ($this->compilable as $viewName) {
 			$reference = $this->viewFactory->getViewReference($viewName);
 			$content = $this->viewFactory->render($viewName);
-			$this->staticLoader->saveTemplate($reference, new StringStorage($content));
+			$this->fs->write(ViewStaticLoader::$pathSuffix . $this->staticLoader->getHashedFilename($reference), $content);
 			$output->writeln(" - $viewName");
 		}
 

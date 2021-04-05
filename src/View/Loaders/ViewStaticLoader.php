@@ -10,10 +10,9 @@ use Symfony\Component\Templating\TemplateReferenceInterface;
 
 final class ViewStaticLoader extends Loader
 {
-	public function __construct(
-		private Filesystem $filesystem,
-		private string $staticPath
-	)
+	public static string $pathSuffix = "/static/";
+
+	public function __construct(private Filesystem $fs)
 	{
 		//
 	}
@@ -21,9 +20,9 @@ final class ViewStaticLoader extends Loader
 
 	public function load(TemplateReferenceInterface $template): Storage
 	{
-		$path = $this->staticPath . $template->getPath();
+		$path = self::$pathSuffix . $template->getPath();
 
-		if (is_readable($path)) {
+		if ($this->fs->fileExists($path)) {
 			return new FileStorage($path);
 		}
 
@@ -45,12 +44,6 @@ final class ViewStaticLoader extends Loader
 
 	public function saveTemplate(TemplateReferenceInterface $template, Storage $content): void
 	{
-		$this->filesystem->write($this->staticPath . $this->getHashedFilename($template), $content->getContent());
-	}
-
-
-	public function getBasePath(): string
-	{
-		return $this->staticPath;
+		$this->fs->write(self::$pathSuffix . $this->getHashedFilename($template), $content->getContent());
 	}
 }

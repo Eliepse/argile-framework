@@ -4,11 +4,12 @@ namespace Eliepse\Argile\Tests\Unit\Commands;
 
 use Eliepse\Argile\Commands\CompileViewsCommand;
 use Eliepse\Argile\Config\ConfigRepository;
-use Eliepse\Argile\Support\Path;
+use Eliepse\Argile\Filesystem\StorageRepository;
 use Eliepse\Argile\Tests\TestCase;
 use Eliepse\Argile\View\Loaders\GraveurTemplateReference;
 use Eliepse\Argile\View\Loaders\ViewStaticLoader;
 use Eliepse\Argile\View\ViewFactory;
+use League\Flysystem\Filesystem;
 use Symfony\Component\Console\Command\Command;
 
 class CompileViewsCommandTest extends TestCase
@@ -42,13 +43,16 @@ class CompileViewsCommandTest extends TestCase
 		/**
 		 * @var ConfigRepository $configs
 		 * @var ViewFactory $viewFactory
+		 * @var Filesystem $fs
 		 */
 		$configs = $this->app->resolve(ConfigRepository::class);
 		$viewFactory = $this->app->resolve(ViewFactory::class);
+		$fs = $this->app->resolve(StorageRepository::class)->getDriver("views");
 
 		/** @var ViewStaticLoader $staticLoader */
 		$staticLoader = $viewFactory->getLoaders()["static"];
 		$filename = $staticLoader->getHashedFilename(new GraveurTemplateReference("hello"));
+		$filepath = ViewStaticLoader::$pathSuffix . $filename;
 
 		$configs->set("view.compile.enable", true);
 		$configs->set("view.compile.views", ["hello"]);
@@ -56,7 +60,7 @@ class CompileViewsCommandTest extends TestCase
 		$tester = $this->execute(CompileViewsCommand::class);
 
 		$this->assertEquals(Command::SUCCESS, $tester->getStatusCode());
-		$this->assertFileExists(Path::storage("framework/views/static/$filename"));
-		$this->assertEquals("Hello World ", file_get_contents(Path::storage("framework/views/static/$filename")));
+		$this->assertTrue($fs->fileExists($filepath));
+		$this->assertEquals("Hello World ", $fs->read($filepath));
 	}
 }

@@ -6,4 +6,8 @@ return [
 	"storage" => [
 		"path" => Path::storage(),
 	],
+
+	"views" => [
+		"path" => Path::storage("framework/views/"),
+	],
 ];
