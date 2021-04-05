@@ -3,6 +3,7 @@
 namespace Eliepse\Argile\Cache;
 
 use Doctrine\Common\Cache\Cache;
+use Doctrine\Common\Cache\CacheProvider;
 use Eliepse\Argile\Config\ConfigRepository;
 
 final class CacheRepository
@@ -17,7 +18,7 @@ final class CacheRepository
 	}
 
 
-	private function makeStoreWithConfigs(string $name, array $configs = []): Cache
+	private function makeStoreWithConfigs(string $name, array $configs = []): CacheProvider
 	{
 		if (empty($configs) || empty($configs["driver"])) {
 			throw new \InvalidArgumentException("Invalid configuration for cache store '$name'.");
@@ -32,13 +33,13 @@ final class CacheRepository
 	}
 
 
-	private function makeStore(string $name): Cache
+	private function makeStore(string $name): CacheProvider
 	{
 		return $this->makeStoreWithConfigs($name, $this->configs->get("cache.stores.$name"));
 	}
 
 
-	public function getStore(string $name = null): Cache
+	public function getStore(string $name = null): CacheProvider
 	{
 		if (null === $name) {
 			return $this->getStore($this->default);
