@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "e61a8eef8bf5137ee4daec49852abf5c",
+    "content-hash": "64b7964eea4a99cf7ed2c83cc8e0dfc7",
     "packages": [
         {
             "name": "doctrine/cache",
@@ -370,16 +370,16 @@
         },
         {
             "name": "middlewares/php-session",
-            "version": "v2.0.0",
+            "version": "v3.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/middlewares/php-session.git",
-                "reference": "8a987eae4b668383e01de3d4b34caa20291426b0"
+                "reference": "3a29262db9bd890bb24cf18224be2edde7cb1888"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/middlewares/php-session/zipball/8a987eae4b668383e01de3d4b34caa20291426b0",
-                "reference": "8a987eae4b668383e01de3d4b34caa20291426b0",
+                "url": "https://api.github.com/repos/middlewares/php-session/zipball/3a29262db9bd890bb24cf18224be2edde7cb1888",
+                "reference": "3a29262db9bd890bb24cf18224be2edde7cb1888",
                 "shasum": ""
             },
             "require": {
@@ -417,9 +417,9 @@
             ],
             "support": {
                 "issues": "https://github.com/middlewares/php-session/issues",
-                "source": "https://github.com/middlewares/php-session/tree/v2.0.0"
+                "source": "https://github.com/middlewares/php-session/tree/v3.0.0"
             },
-            "time": "2020-12-03T23:19:01+00:00"
+            "time": "2021-02-22T21:56:45+00:00"
         },
         {
             "name": "monolog/monolog",
@@ -569,16 +569,16 @@
         },
         {
             "name": "opis/closure",
-            "version": "3.6.1",
+            "version": "3.6.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opis/closure.git",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5"
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opis/closure/zipball/943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
-                "reference": "943b5d70cc5ae7483f6aff6ff43d7e34592ca0f5",
+                "url": "https://api.github.com/repos/opis/closure/zipball/06e2ebd25f2869e54a306dda991f7db58066f7f6",
+                "reference": "06e2ebd25f2869e54a306dda991f7db58066f7f6",
                 "shasum": ""
             },
             "require": {
@@ -628,9 +628,9 @@
             ],
             "support": {
                 "issues": "https://github.com/opis/closure/issues",
-                "source": "https://github.com/opis/closure/tree/3.6.1"
+                "source": "https://github.com/opis/closure/tree/3.6.2"
             },
-            "time": "2020-11-07T02:01:34+00:00"
+            "time": "2021-04-09T13:42:10+00:00"
         },
         {
             "name": "php-di/invoker",
