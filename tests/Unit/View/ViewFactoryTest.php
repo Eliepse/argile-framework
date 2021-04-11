@@ -42,4 +42,13 @@ class ViewFactoryTest extends TestCase
 			trim(ViewFactory::make("village", ["buildings" => [1 => "church", 3 => "house"]]))
 		);
 	}
+
+
+	public function testCommentedMustachedInstructions(): void
+	{
+		$this->assertEquals(
+			"Nothing here.",
+			trim(ViewFactory::make("commented", ["foo" => "bar"]))
+		);
+	}
 }
