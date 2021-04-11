@@ -261,6 +261,10 @@ final class Application
 
 	public function run(): void
 	{
+		$this->app->addBodyParsingMiddleware();
+		$this->app->addRoutingMiddleware();
+		$this->app->addErrorMiddleware(! $this->isProduction(), true, true, $this->resolve(LoggerInterface::class));
+
 		$this->app->run();
 	}
 }

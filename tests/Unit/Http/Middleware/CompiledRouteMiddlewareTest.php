@@ -54,9 +54,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 
 		$this->markTestIncomplete("Cannot make slim router work as expected.");
 
-//		$response = $route->run($this->factory->createServerRequest("GET", $route->getPattern()));
-		$uri = new Uri("http", "localhost", "80", "/compiled");
-		$response = $this->app->getSlim()->handle($this->factory->createServerRequest("GET", $uri));
+		$response = $route->run($this->factory->createServerRequest("GET", $route->getPattern()));
 		$this->assertEquals($staticFilepath, $response->getBody()->getMetadata("uri"));
 	}
 
