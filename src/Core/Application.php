@@ -126,16 +126,6 @@ final class Application
 
 	/**
 	 * @throws \Exception
-	 * @deprecated Use boot() instead
-	 */
-	public function loadSlim(): void
-	{
-		$this->boot();
-	}
-
-
-	/**
-	 * @throws \Exception
 	 */
 	public function boot(): void
 	{
