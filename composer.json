@@ -15,23 +15,26 @@
         "ext-json" : "*",
         "ext-iconv" : "*",
         "slim/slim" : "^4.5",
-        "vlucas/phpdotenv" : "^5.2",
-        "php-di/slim-bridge" : "^3.0",
-        "middlewares/php-session" : "^2.0.0",
+        "vlucas/phpdotenv" : "^5.3",
+        "php-di/slim-bridge" : "^3.1",
+        "middlewares/php-session" : "^3.0.0",
         "doctrine/cache" : "^1.10",
-        "monolog/monolog" : "^2.1",
-        "symfony/templating" : "^5.1",
-        "slim/psr7": "^1.2",
+        "monolog/monolog" : "^2.2",
+        "symfony/templating" : "^5.2",
+        "slim/psr7": "^1.3",
         "slim/flash": "^0.4.0",
         "symfony/console": "^5.2",
         "league/flysystem": "^2.0"
     },
     "require-dev" : {
-        "symfony/var-dumper" : "^5.1",
+        "symfony/var-dumper" : "^5.2",
         "phpunit/phpunit": "^9.5",
         "sempro/phpunit-pretty-print": "^1.4"
     },
     "autoload" : {
+        "files" : [
+            "src/Support/helpers.php"
+        ],
         "psr-4" : {
             "Eliepse\\Argile\\" : "src",
             "Eliepse\\Argile\\Tests\\" : "tests"

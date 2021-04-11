@@ -28,7 +28,6 @@ class TestCase extends \PHPUnit\Framework\TestCase
 		});
 
 		$this->app->boot();
-		$this->app->getSlim()->addRoutingMiddleware();
 	}
 
 

@@ -9,17 +9,21 @@ final class GraveurParser implements ParserInterface
 {
 	public function parse(Storage $template): Storage
 	{
+		// To prevent commented structure to be catched and executed,
+		// any comment is trimed out of the content as a first pass.
+		$commented_content = preg_replace("/({#\s*(.+)\s*#})/miU", "", $template->getContent());
+
+		// The second pass actually execute the structures, but safely
+		// because comments has be removed.
 		$parsed_content = preg_replace_callback("/({([{%#])\s*(.+)\s*[}%#]})/miU", function ($matches) {
 			switch ($matches[2]) {
 				case '{':
 					return '<?= $view->escape(' . trim($matches[3]) . ') ?>';
 				case '%':
 					return $this->parseLogicalBrackets($matches[3]);
-				case '#':
-					return "<?php #$matches[3] ?>";
 			}
 			return $matches[0];
-		}, $template->getContent());
+		}, $commented_content);
 
 		if (is_null($parsed_content)) {
 			throw new \ErrorException("Unable to parse the view, error with the 'preg_replace_callback'.");

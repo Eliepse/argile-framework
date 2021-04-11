@@ -7,6 +7,8 @@ return [
 
 	"viewsPath" => Path::resources("views/"),
 
+	"maintenanceView" => null,
+
 	"cache" => [
 		"enable" => Env::get("VIEW_CACHE", false),
 		"store" => "views",
