@@ -11,7 +11,7 @@ use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Support\Config;
 use ErrorException;
-use Monolog\Logger;
+use Psr\Container\ContainerInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use function DI\factory as DIFactory;
@@ -84,13 +84,17 @@ final class Application
 
 	private function registerEnvironment(): void
 	{
-		if ($this->container->has(EnvironmentInterface::class)) {
-			return;
+		if (! $this->container->has(EnvironmentInterface::class)) {
+			$this->register(EnvironmentInterface::class, function () {
+				return $this->environment;
+			});
 		}
 
-		$this->register(EnvironmentInterface::class, function () {
-			return $this->environment;
-		});
+		if (! $this->container->has(Environment::class)) {
+			$this->register(Environment::class, function (ContainerInterface $c) {
+				return $c->get(EnvironmentInterface::class);
+			});
+		}
 	}
 
 
