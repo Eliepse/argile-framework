@@ -9,7 +9,7 @@ use Slim\Psr7\Factory\ServerRequestFactory;
 
 class ErrorHandlingTest extends TestCase
 {
-	public function testItCachesErrors(): void
+	public function testItCatchesErrors(): void
 	{
 		$route = Router::get("/broken", GenerateErrorTestController::class);
 

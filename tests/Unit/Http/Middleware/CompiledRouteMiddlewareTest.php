@@ -31,7 +31,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 	public function testRuntimeRoute(): void
 	{
 		$route = $this->app->getSlim()->get("/generated", RuntimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 
 		$pattern = $route->getPattern();
 
@@ -47,7 +47,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 	public function testBuildtimeRoute(): void
 	{
 		$route = Router::get("/compiled", BuildtimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 
 		$this->execute(CompileRoutesCommand::class);
 		$staticFilepath = Path::storage("framework/routes/static/" . $route->getIdentifier());
@@ -64,7 +64,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 		$this->env->getRepository()->set("ROUTES_COMPILE", false);
 
 		$route = $this->app->getSlim()->get("/compiled", BuildtimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 		$pattern = $route->getPattern();
 
 		$this->execute(CompileRoutesCommand::class);

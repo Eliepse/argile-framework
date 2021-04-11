@@ -4,7 +4,9 @@ namespace Eliepse\Argile\Http\Middleware;
 
 use DateInterval;
 use DateTime;
+use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Core\Application;
+use Eliepse\Argile\Core\Environment;
 use Eliepse\Argile\Http\Responses\ViewResponse;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -20,10 +22,10 @@ class MaintenanceMiddleware implements MiddlewareInterface
 	private string $tokenKey = "maintenanceToken";
 
 
-	public function __construct(bool $isMaintenance = false, string $viewPath = null)
+	public function __construct(Environment $env,ConfigRepository $configs)
 	{
-		$this->viewPath = $viewPath;
-		$this->isMaintenance = $isMaintenance;
+		$this->viewPath = $configs->get("views.maintenanceView");
+		$this->isMaintenance = ! $env->get("APP_ONLINE", true);
 
 		if ($this->isMaintenance) {
 			$this->token = $this->getOrNewToken();
@@ -74,7 +76,7 @@ class MaintenanceMiddleware implements MiddlewareInterface
 	private function resetSessionBypass(): void
 	{
 		$expiresIn = new DateInterval("P15M");
-		$_SESSION[ $this->tokenKey ] = [
+		$_SESSION[$this->tokenKey] = [
 			"expires_at" => (new DateTime())->add($expiresIn)->getTimestamp(),
 			"token" => $this->token,
 		];
@@ -83,12 +85,12 @@ class MaintenanceMiddleware implements MiddlewareInterface
 
 	private function validateSessionBypass(): bool
 	{
-		if (! isset($_SESSION[ $this->tokenKey ])) {
+		if (! isset($_SESSION[$this->tokenKey])) {
 			return false;
 		}
 
-		$expires_at = $_SESSION[ $this->tokenKey ]["expires_at"] ?? 0;
-		$token = $_SESSION[ $this->tokenKey ]["token"] ?? null;
+		$expires_at = $_SESSION[$this->tokenKey]["expires_at"] ?? 0;
+		$token = $_SESSION[$this->tokenKey]["token"] ?? null;
 
 		if ($expires_at < (new DateTime())->getTimestamp()) {
 			return false;

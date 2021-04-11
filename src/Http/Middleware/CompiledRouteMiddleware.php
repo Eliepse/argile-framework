@@ -2,8 +2,8 @@
 
 namespace Eliepse\Argile\Http\Middleware;
 
+use Eliepse\Argile\Core\Environment;
 use Eliepse\Argile\Http\Router;
-use Eliepse\Argile\Support\Env;
 use Eliepse\Argile\Support\Path;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -18,9 +18,9 @@ final class CompiledRouteMiddleware implements \Psr\Http\Server\MiddlewareInterf
 	private bool $enabled;
 
 
-	public function __construct(bool $enable = null)
+	public function __construct(Environment $envs)
 	{
-		$this->enabled = $enable ?? Env::get("ROUTES_COMPILE", false);
+		$this->enabled = $envs->get("ROUTES_COMPILE", false);
 	}
 
 
