@@ -22,7 +22,6 @@ final class SessionMiddleware implements \Psr\Http\Server\MiddlewareInterface
 		$this->phpSession->options([
 			'use_strict_mode' => true,
 			'cookie_httponly' => true,
-			'use_only_cookies' => true,
 			'sid_length' => 64,
 			'sid_bits_per_character' => 6,
 			'cookie_lifetime' => $configs->get("app.session.lifetime", 3_600 * 24 * 14),
