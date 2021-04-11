@@ -9,8 +9,10 @@ use Doctrine\Common\Cache\PhpFileCache;
 use Eliepse\Argile\Config\ConfigRepository;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
+use Eliepse\Argile\Support\Config;
 use ErrorException;
-use Monolog\Logger;
+use Psr\Container\ContainerInterface;
+use Psr\Http\Server\MiddlewareInterface;
 use Psr\Log\LoggerInterface;
 use function DI\factory as DIFactory;
 
@@ -82,13 +84,17 @@ final class Application
 
 	private function registerEnvironment(): void
 	{
-		if ($this->container->has(EnvironmentInterface::class)) {
-			return;
+		if (! $this->container->has(EnvironmentInterface::class)) {
+			$this->register(EnvironmentInterface::class, function () {
+				return $this->environment;
+			});
 		}
 
-		$this->register(EnvironmentInterface::class, function () {
-			return $this->environment;
-		});
+		if (! $this->container->has(Environment::class)) {
+			$this->register(Environment::class, function (ContainerInterface $c) {
+				return $c->get(EnvironmentInterface::class);
+			});
+		}
 	}
 
 
@@ -115,16 +121,6 @@ final class Application
 
 			return new ConfigRepository($this->configPath);
 		});
-	}
-
-
-	/**
-	 * @throws \Exception
-	 * @deprecated Use boot() instead
-	 */
-	public function loadSlim(): void
-	{
-		$this->boot();
 	}
 
 
@@ -259,8 +255,29 @@ final class Application
 	}
 
 
+	private function addConfiguredMiddlewares(): void
+	{
+		$globalMiddlewares = Config::get("middlewares.global", []);
+
+		foreach ($globalMiddlewares as $middlewareClass) {
+			if (! is_a($middlewareClass, MiddlewareInterface::class, true)) {
+				throw new ErrorException("Middlewares should implement Psr\Http\Server\MiddlewareInterface. Invalid middleware: $middlewareClass");
+			}
+
+			$this->app->addMiddleware($this->container->make($middlewareClass));
+		}
+	}
+
+
 	public function run(): void
 	{
+		$this->addConfiguredMiddlewares();
+
+		// Adding core middleware
+		$this->app->addBodyParsingMiddleware();
+		$this->app->addRoutingMiddleware();
+		$this->app->addErrorMiddleware(! $this->isProduction(), true, true, $this->resolve(LoggerInterface::class));
+
 		$this->app->run();
 	}
 }

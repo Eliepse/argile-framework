@@ -31,7 +31,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 	public function testRuntimeRoute(): void
 	{
 		$route = $this->app->getSlim()->get("/generated", RuntimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 
 		$pattern = $route->getPattern();
 
@@ -47,16 +47,14 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 	public function testBuildtimeRoute(): void
 	{
 		$route = Router::get("/compiled", BuildtimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 
 		$this->execute(CompileRoutesCommand::class);
 		$staticFilepath = Path::storage("framework/routes/static/" . $route->getIdentifier());
 
 		$this->markTestIncomplete("Cannot make slim router work as expected.");
 
-//		$response = $route->run($this->factory->createServerRequest("GET", $route->getPattern()));
-		$uri = new Uri("http", "localhost", "80", "/compiled");
-		$response = $this->app->getSlim()->handle($this->factory->createServerRequest("GET", $uri));
+		$response = $route->run($this->factory->createServerRequest("GET", $route->getPattern()));
 		$this->assertEquals($staticFilepath, $response->getBody()->getMetadata("uri"));
 	}
 
@@ -66,7 +64,7 @@ class CompiledRouteMiddlewareTest extends \Eliepse\Argile\Tests\TestCase
 		$this->env->getRepository()->set("ROUTES_COMPILE", false);
 
 		$route = $this->app->getSlim()->get("/compiled", BuildtimeTestController::class)
-			->addMiddleware(new CompiledRouteMiddleware(true));
+			->addMiddleware($this->app->container->make(CompiledRouteMiddleware::class));
 		$pattern = $route->getPattern();
 
 		$this->execute(CompileRoutesCommand::class);
