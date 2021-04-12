@@ -7,6 +7,10 @@ use DI\Container;
 use DI\ContainerBuilder;
 use Doctrine\Common\Cache\PhpFileCache;
 use Eliepse\Argile\Config\ConfigRepository;
+use Eliepse\Argile\Errors\HtmlErrorRenderer;
+use Eliepse\Argile\Errors\JsonErrorRendered;
+use Eliepse\Argile\Errors\PlainTextErrorRenderer;
+use Eliepse\Argile\Errors\XmlErrorRenderer;
 use Eliepse\Argile\Providers\LogProvider;
 use Eliepse\Argile\Providers\ProviderInterface;
 use Eliepse\Argile\Support\Config;
@@ -276,7 +280,17 @@ final class Application
 		// Adding core middleware
 		$this->app->addBodyParsingMiddleware();
 		$this->app->addRoutingMiddleware();
-		$this->app->addErrorMiddleware(! $this->isProduction(), true, true, $this->resolve(LoggerInterface::class));
+		$errMiddleware = $this->app->addErrorMiddleware(
+			! $this->isProduction(),
+			true,
+			true,
+			$this->resolve(LoggerInterface::class)
+		);
+
+		$errMiddleware->getDefaultErrorHandler()->registerErrorRenderer("text/html", HtmlErrorRenderer::class);
+		$errMiddleware->getDefaultErrorHandler()->registerErrorRenderer("application/json", JsonErrorRendered::class);
+		$errMiddleware->getDefaultErrorHandler()->registerErrorRenderer("text/plain", PlainTextErrorRenderer::class);
+		$errMiddleware->getDefaultErrorHandler()->registerErrorRenderer("application/xhtml+xml", XmlErrorRenderer::class);
 
 		$this->app->run();
 	}
