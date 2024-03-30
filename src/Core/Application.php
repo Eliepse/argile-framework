@@ -56,7 +56,6 @@ final class Application
 
 		$builder = new ContainerBuilder();
 		$builder->useAutowiring(true);
-		$builder->useAnnotations(false);
 		$this->container = $builder->build();
 		$this->container->set(Application::class, $this);
 	}
