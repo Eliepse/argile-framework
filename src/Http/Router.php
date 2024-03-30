@@ -115,4 +115,15 @@ final class Router
 	{
 		return array_key_exists($route->getIdentifier(), Router::$builtimeRoutes);
 	}
+
+
+    /**
+     * Clear routes from memory.
+     *
+     * @return void
+     */
+    public static function reset(): void
+    {
+        self::$builtimeRoutes = [];
+    }
 }
