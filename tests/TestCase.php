@@ -42,12 +42,11 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 	protected function tearDown(): void
 	{
+        Router::reset();
 		/** @var StorageRepository $storage */
 		$storage = $this->app->resolve(StorageRepository::class);
 		$storage->getDriver()->deleteDirectory("/cache");
 		$storage->getDriver()->deleteDirectory("/bootstrap");
-        Router::reset();
-
-//		$storage->getDriver("storage")->deleteDirectory("/");
+		$storage->getDriver("storage")->deleteDirectory("/");
 	}
 }
