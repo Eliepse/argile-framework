@@ -28,6 +28,7 @@ final class SessionMiddleware implements \Psr\Http\Server\MiddlewareInterface
             "use_cookies" => false,
             "use_only_cookie" => true,
             "use_trans_id" => false,
+            "cache_limiter" => "",
             "cookie_secure" => $configs->get("secure", $app->isProduction()),
 			'cookie_lifetime' => $configs->get("app.session.lifetime", 3_600 * 24 * 14),
 		]);
