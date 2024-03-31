@@ -5,7 +5,7 @@ namespace Eliepse\Argile\Tests\Unit\Commands;
 use Eliepse\Argile\Commands\CompileRoutesCommand;
 use Eliepse\Argile\Http\Router;
 use Eliepse\Argile\Support\Path;
-use Eliepse\Argile\Tests\fixtures\Controllers\BuildtimeTestController;
+use Eliepse\Argile\Tests\Fixtures\Controllers\BuildtimeTestController;
 use Eliepse\Argile\Tests\Fixtures\Controllers\RuntimeTestController;
 use Eliepse\Argile\Tests\TestCase;
 use Symfony\Component\Console\Command\Command;
@@ -25,8 +25,8 @@ class CompileRoutesCommandTest extends TestCase
 	public function testCompiledRoutes(): void
 	{
 		Router::get("/runtime", RuntimeTestController::class);
-		$route = Router::get("/buildtime", BuildtimeTestController::class);
-		$filename = $route->getIdentifier();
+		Router::get("/buildtime", BuildtimeTestController::class);
+		$filename = crc32("/buildtime");
 
 		$tester = $this->execute(CompileRoutesCommand::class);
 

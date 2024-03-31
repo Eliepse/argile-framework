@@ -56,11 +56,13 @@ final class CompileRoutesCommand extends Command
 		$requestFactory = new \Slim\Psr7\Factory\ServerRequestFactory();
 		$output->writeln("Start compiling routes:");
 
-		foreach ($this->compilable as $id => $route) {
+		foreach ($this->compilable as $route) {
 			$request = $requestFactory->createServerRequest("GET", $route->getPattern());
-			$this->fs->write("framework/routes/static/$id", $route->run($request)->getBody());
+            $hash = crc32($request->getRequestTarget());
 
-			$output->writeln(" - " . $route->getPattern());
+			$this->fs->write("framework/routes/static/$hash", $route->run($request)->getBody());
+
+			$output->writeln(" - {$route->getPattern()} (hash: $hash)");
 		}
 
 		$output->writeln("Done compiling routes.");

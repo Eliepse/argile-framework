@@ -6,6 +6,7 @@ use Doctrine\Common\Cache\ArrayCache;
 use Doctrine\Common\Cache\Cache;
 use Eliepse\Argile\Core\Application;
 use Eliepse\Argile\Filesystem\StorageRepository;
+use Eliepse\Argile\Http\Router;
 use Eliepse\Argile\Support\Path;
 use Symfony\Component\Console\Tester\CommandTester;
 
@@ -41,6 +42,7 @@ class TestCase extends \PHPUnit\Framework\TestCase
 
 	protected function tearDown(): void
 	{
+        Router::reset();
 		/** @var StorageRepository $storage */
 		$storage = $this->app->resolve(StorageRepository::class);
 		$storage->getDriver()->deleteDirectory("/cache");
