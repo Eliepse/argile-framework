@@ -25,7 +25,7 @@ final class SessionMiddleware implements \Psr\Http\Server\MiddlewareInterface
 			'cookie_httponly' => true,
 			'sid_length' => 64,
 			'sid_bits_per_character' => 6,
-            "use_cookies" => true,
+            "use_cookies" => false,
             "use_only_cookie" => true,
             "use_trans_id" => false,
             "cookie_secure" => $configs->get("secure", $app->isProduction()),
