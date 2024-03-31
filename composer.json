@@ -17,7 +17,7 @@
         "slim/slim" : "^4.7.1",
         "vlucas/phpdotenv" : "^5.3",
         "php-di/slim-bridge" : "^3.1.1",
-        "middlewares/php-session" : "^3.0.0",
+        "middlewares/php-session" : "^v3.1.1",
         "doctrine/cache" : "^1.10",
         "monolog/monolog" : "^2.2",
         "symfony/templating" : "^5.2",
@@ -29,7 +29,8 @@
     "require-dev" : {
         "symfony/var-dumper" : "^5.2",
         "phpunit/phpunit": "^9.5",
-        "sempro/phpunit-pretty-print": "^1.4"
+        "sempro/phpunit-pretty-print": "^1.4",
+        "phpstan/phpstan": "^1.10"
     },
     "autoload" : {
         "files" : [
